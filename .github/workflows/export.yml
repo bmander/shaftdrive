@@ -1,0 +1,60 @@
+# On every push: install a released solventc, check the drive (solve, diagnosis, every claim) and
+# export its pictures and meshes as a build artifact.  The job fails if the drive does not solve,
+# an output is refused or a claim is refuted; the artifact is uploaded either way.
+name: export
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      solventc_version:
+        description: "solventc release tag (or `latest`)"
+        required: false
+        default: v0.1.17
+
+concurrency:
+  group: export-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      # The release the drive was written against; a repository variable or a manual run's
+      # input chooses another.
+      SOLVENTC_VERSION: ${{ inputs.solventc_version || vars.SOLVENTC_VERSION || 'v0.1.17' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install solventc ${{ env.SOLVENTC_VERSION }}
+        run: |
+          set -eu
+          name=solventc-x86_64-unknown-linux-musl
+          if [ "$SOLVENTC_VERSION" = latest ]; then
+            base=https://github.com/bmander/geomsolver/releases/latest/download
+          else
+            base=https://github.com/bmander/geomsolver/releases/download/$SOLVENTC_VERSION
+          fi
+          tmp=$(mktemp -d)
+          curl -fsSL "$base/$name.tar.gz" -o "$tmp/$name.tar.gz"
+          curl -fsSL "$base/SHA256SUMS" -o "$tmp/SHA256SUMS"
+          (cd "$tmp" && grep " $name.tar.gz\$" SHA256SUMS | sha256sum -c -)
+          tar xzf "$tmp/$name.tar.gz" -C "$tmp"
+          mkdir -p "$RUNNER_TEMP/bin"
+          install -m 755 "$tmp/$name/solventc" "$RUNNER_TEMP/bin/solventc"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Check and export
+        run: scripts/export.sh out
+
+      - name: Upload pictures, meshes and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shaftdrive-${{ github.sha }}
+          path: out/
+          if-no-files-found: warn
