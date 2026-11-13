@@ -87,8 +87,8 @@ component Frame(bb: point, axle: point) {
   // and the non-drive chainstay's foot on the shell
   stay_l := Beside(stay_c, dy: stay_spread)
   stay_r := Beside(stay_c, dy: -stay_spread)
-  drop_l := Beside(axle, dy: old / 2 - dropout_t)
-  drop_r := Beside(axle, dy: -old / 2 + dropout_t)
+  drop_l := Beside(axle, dy: old / 2 + dropout_t / 2)
+  drop_r := Beside(axle, dy: -old / 2 - dropout_t / 2)
   cs_foot := Beside(bb, dy: ns_stay_y)
 
   seat := Tube(bb, seat_top, od: seat_od, id: seat_id, past_a: 0mm, past_b: 0mm)
@@ -96,7 +96,7 @@ component Frame(bb: point, axle: point) {
   top := Tube(cluster_c, top_head, od: top_od, id: top_id, past_a: 0mm, past_b: 0mm)
   down := Tube(bb, down_head, od: down_od, id: down_id, past_a: 0mm, past_b: 0mm)
   seat_stay_l := Tube(stay_l.p, drop_l.p, od: stay_od, id: stay_id, past_a: 0mm, past_b: -stay_short)
-  seat_stay_r := Tube(stay_r.p, drop_r.p, od: stay_od, id: stay_id, past_a: 0mm, past_b: -stay_short)
+  seat_stay_r := Tube(stay_r.p, drop_r.p, od: stay_od, id: stay_id, past_a: 0mm, past_b: -72mm)
   chainstay_l := Tube(cs_foot.p, drop_l.p, od: ns_stay_od, id: ns_stay_id, past_a: 0mm,
     past_b: -stay_short)
 
@@ -106,7 +106,7 @@ component Frame(bb: point, axle: point) {
   construction axle_ax := line(axle, axle_end.p)
   dropout_l := solid({ q | q in std.sets.Cylinder(axle_ax, r: dropout_r)
                            q not in std.sets.Cylinder(axle_ax, r: 6mm)
-                           axle distance(in: (old / 2 - dropout_t, old / 2), along: axle_ax) q })
+                           axle distance(in: (old / 2, old / 2 + dropout_t), along: axle_ax) q })
 
   // the mitres: the top tube coped to the seat and head tubes, the down tube to the head tube and
   // the seat stays to the seat tube (the tubes meeting the bottom bracket are coped to its shell,

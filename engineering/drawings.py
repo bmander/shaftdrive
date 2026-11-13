@@ -1,0 +1,53 @@
+import math,json,os
+os.environ.setdefault("MPLCONFIGDIR","/tmp/shaftdrive-mpl")
+from pathlib import Path
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle,Circle,FancyArrowPatch
+P=Path(__file__).parent
+plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10})
+fig,(ax,side)=plt.subplots(2,1,figsize=(13,9),gridspec_kw={'height_ratios':[1.2,1]})
+fig.patch.set_facecolor('#f8faf7')
+X=-math.sqrt(460**2-70**2);front=(-38.982,-39);rear=(-415.661,-68.9947)
+ax.set_title('Packaging proposal • plan view, dimensions in mm',loc='left',fontweight='bold',fontsize=16)
+ax.add_patch(Rectangle((X-60,-105),120,64,fc='#d5b690',ec='#765934',alpha=.8))
+ax.add_patch(Rectangle((-64,-36.5),128,73,fc='#aac6bb',ec='#2f5c4c',alpha=.7))
+ax.add_patch(Rectangle((X-348,-18.5),696,37,fc='#ccd1d3',ec='none',alpha=.5))
+ax.axhline(0,color='#777',lw=.7,ls='--')
+ax.plot([front[0],rear[0]],[front[1],rear[1]],color='#1c6552',lw=7)
+for x,y in [front,rear]:ax.plot(x,y,'o',color='#1c6552')
+for y in [-30,30]:ax.add_patch(Rectangle((X-28,y-1.5),56,3,fc='#274c64'))
+ax.plot([X,X],[-116,81],color='#666',lw=2)
+for y in [-71,71]:ax.plot([X-40,X+40],[y,y],color='#b56c38',lw=2,ls=':')
+ax.annotate('4.5° shaft splay\n94.5° bevel axes',(-230,-54),(-260,-112),arrowprops={'arrowstyle':'->'},ha='center')
+ax.annotate('73 mm main case\nØ128; external caps',(-10,36.5),(0,75),arrowprops={'arrowstyle':'->'},ha='center')
+ax.annotate('Equal flange centers ±30', (X,30),(X+70,65),arrowprops={'arrowstyle':'->'},ha='center')
+ax.annotate('Custom rear pod\n−105…−41; Ø126 cover',(X-40,-80),(X-100,-120),arrowprops={'arrowstyle':'->'},ha='center')
+ax.text(-200,8,'37 mm tire envelope',color='#555')
+ax.set(xlim=(-620,80),ylim=(-140,105),xlabel='x: forward →',ylabel='y: left →');ax.set_aspect('equal');ax.grid(alpha=.13)
+side.set_title('Pinion cartridge • axial stations from mean pitch point',loc='left',fontweight='bold',fontsize=14)
+for start,end,label,color in [(3,5,'Shoulder','#bbb'),(5,19,'7303BW','#adc8bd'),(19,29,'Ground\nspacers','#ddd'),(29,43,'7303BW','#adc8bd'),(43,45,'Retainer','#d2bc91'),(45,52,'17×28×7\nlip seal','#d7a9a0'),(53,75,'6-flank spline','#9bb7ce')]:
+ side.add_patch(Rectangle((start,-7),end-start,14,fc=color,ec='#444'))
+ side.text((start+end)/2,10 if end-start<4 else 0,label,ha='center',va='center',rotation=90 if end-start<4 else 0,fontsize=9)
+ side.text(start,-11,str(start),ha='center',fontsize=9)
+side.plot([0,79],[0,0],ls='--',color='#777',lw=.7)
+side.annotate('DIN 471 groove 43.5–44.5\nShim after 43 mm bearing face',(44,-6),(48,-25),arrowprops={'arrowstyle':'->'},ha='center')
+side.text(2,29,'DB matched pair • 24 mm between bearing centers • spacer differential sets supplier preload',fontsize=11)
+side.text(2,-33,'Two cartridges. Bearing internals are envelope placeholders. Thread helices, bolt heads and oil ports need drawing release.',fontsize=9,color='#755037')
+side.set(xlim=(-2,81),ylim=(-38,36),xlabel='Along pinion axis (mm)');side.set_yticks([]);side.grid(axis='x',alpha=.15)
+fig.tight_layout(pad=2);fig.savefig(P/'layout.png',dpi=160);fig.savefig(P/'layout.pdf');plt.close(fig)
+# Wheel section, with true bracing proportions. Horizontal radial coordinate, vertical lateral.
+fig,ax=plt.subplots(figsize=(11,4.7));ax.set_title('Wheel bracing • 32 spokes, three-cross, ERD 596',loc='left',fontsize=16,fontweight='bold')
+for f in [-30,30]:
+ for e in [-2.55,2.55]:ax.plot([24,298],[f+e,math.copysign(1.5,f)],color='#2f6756',alpha=.6)
+ ax.plot([20,28],[f,f],lw=5,color='#344c65')
+ax.add_patch(Rectangle((291,-11),23,22,fc='#aaa',ec='#555'))
+ax.add_patch(Circle((329.5,0),18.5,ec='#555',fc='#c9cfcb'))
+ax.add_patch(Circle((331,0),22,ec='#b76c42',fc='none',ls='--'))
+ax.annotate('60 mm flange span',(24,30),(72,43),arrowprops={'arrowstyle':'->'})
+ax.annotate('≈5.62° nominal bracing angle',(230,8),(155,35),arrowprops={'arrowstyle':'->'})
+ax.annotate('37-622 tire\n40 mm + 2 mm check',(340,8),(276,40),arrowprops={'arrowstyle':'->'})
+ax.text(85,-37,'Tension target 1,000 N each side • centerline lengths 290.8–291.3 mm\nMeasure actual rim ERD, elbow seating and nipple engagement before ordering spokes.',fontsize=10)
+ax.set(xlim=(0,365),ylim=(-50,58),xlabel='Radius / swept-spoke meridian (mm)',ylabel='Lateral position (mm)');ax.set_aspect('equal');ax.grid(alpha=.15)
+fig.tight_layout();fig.savefig(P/'wheel-section.png',dpi=160);fig.savefig(P/'wheel-section.pdf');plt.close(fig)
