@@ -14,3 +14,10 @@ r=minimum_on_mesh(tri,lambda p:p[:,2],tolerance=.01,mesh_error=0)
 assert r['conservative_lower_mm']<=5<=r['upper_mm']
 assert r['upper_mm']-r['conservative_lower_mm']<=.01000001
 print('PASS: torus coordinates, spoke endpoint convention and triangle distance bounds')
+
+# Capsule cross-section swept sideways, including the finite axial end/corner.
+from check_shaft_assembly import swept_cylinder
+points=np.array([[2,0,5],[2,3,5],[-3,0,5],[2,0,12],[2,4,12]],dtype=float)
+d=swept_cylinder(points,O,np.array([0,0,1]),np.array([1,0,0]),0,10,2,4)
+assert np.allclose(d,[-2,1,1,2,np.sqrt(8)])
+print('PASS: continuous cylindrical assembly sweep, end and corner distances')

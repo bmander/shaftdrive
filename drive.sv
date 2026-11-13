@@ -98,6 +98,8 @@ flip_c coincident flip
 
 // The pinion's mean point at the hub, on the shaft's axis.
 hub_foot := pair.pinion_member.foot at(under: flip) 180deg
+assembly_front := point
+assembly_front coincident pair.pinion_member.foot
 claim hub_foot coincident pair.pinion_member.ax
 
 // Each member is made one part with a web filling its core: the points deeper inside its pitch
@@ -142,7 +144,7 @@ construction hub_gear_spline := interfaces.StraightSpline(root: 28.08mm, major: 
 hub_gear_spline seats(turn: 0deg, up: std.y, east: std.x) hub_joint_here.p
 hub_gear_spline.body cut hub_core_here
 construction pinion_shoulder := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 12mm)
-  pair.pinion_member.foot distance(in: (3mm, 5mm), along: pair.pinion_member.ax) q})
+  pair.pinion_member.foot distance(in: (7mm, 9mm), along: pair.pinion_member.ax) q})
 pinion_shoulder union pinion_part
 bb_pinion := solid(pair.pinion_member.body)
 bb_pinion_core := solid(pinion_part)
@@ -193,6 +195,26 @@ adapter_neck union shaft
 rear_adapter.body union shaft
 rear_coupler := interfaces.SplitCoupler()
 rear_coupler seats(turn: 0deg, up: pair.pinion_member.ax, east: flip) rear_adapter_station.p
+
+// Removable shaft-case tube. Thread envelopes: female M34x1 at the front;
+// the rear shoulder is positively captured by the two-piece closure below.
+shaft_case := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: tube_od / 2)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: tube_id / 2)
+  pair.pinion_member.foot distance(>= 63mm, along: pair.pinion_member.ax) q
+  hub_foot distance(<= -106mm, along: pair.pinion_member.ax) q})
+construction case_female := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 20mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: 17mm)
+  pair.pinion_member.foot distance(in: (55mm, 63mm), along: pair.pinion_member.ax) q})
+construction case_transition := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 20mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: tube_id / 2)
+  pair.pinion_member.foot distance(in: (63mm, 67mm), along: pair.pinion_member.ax) q})
+construction case_rear_shoulder := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 16mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: tube_id / 2)
+  hub_foot distance(in: (-116mm, -114mm), along: pair.pinion_member.ax) q
+  hub_foot distance(in: (-15mm, 15mm), along: flip) q})
+case_female union shaft_case
+case_transition union shaft_case
+case_rear_shoulder union shaft_case
 
 // -- the crank spindle and the cranks -------------------------------------------------------------
 spindle := solid({ q | q in std.sets.Cylinder(bb_line, r: spindle_d / 2)
@@ -249,7 +271,7 @@ right_seat_set := { q | q in std.sets.Cylinder(bb_line, r: std.bearings.b6805.D 
     std.origin distance(in: (case_right - 1mm, case_right + end_wall + 1mm), along: bb_line) q }
 construction right_seat := solid(right_seat_set)
 boss_set := { q | q in std.sets.Cylinder(pair.pinion_member.ax, r: boss_r)
-    pair.pinion_member.foot distance(in: (-boss_ahead, boss_behind), along: pair.pinion_member.ax) q }
+    pair.pinion_member.foot distance(in: (-boss_ahead - 4mm, boss_behind), along: pair.pinion_member.ax) q }
 construction boss := solid(boss_set)
 boss_bore_set := { q | q in std.sets.Cylinder(pair.pinion_member.ax, r: boss_r - wall)
     pair.pinion_member.foot distance(in: (-boss_ahead - 1mm, boss_behind - wall), along: pair.pinion_member.ax) q }
@@ -289,30 +311,40 @@ construction pod_carrier := solid({q | q in std.sets.Cylinder(axle_line, r: 72mm
 construction pod_flange := solid({q | q in std.sets.Cylinder(axle_line, r: 72mm)
   q not in std.sets.Cylinder(axle_line, r: rear_case_r - wall)
   axle_c distance(in: (-82mm, -78mm), along: axle_line) q})
-frame_main := solid(case_outer)
-tubes.body union frame_main
-boss union frame_main
-stay union frame_main
-coupling_chamber union frame_main
-pod_carrier union frame_main
-case_bore cut frame_main
-right_seat cut frame_main
-boss_bore cut frame_main
-stay_bore cut frame_main
-coupling_bore cut frame_main
-rear_pod := solid(dropout)
-hub_boss union rear_pod
-pod_flange union rear_pod
-dropout_bore cut rear_pod
-hub_way cut rear_pod
-axle_way cut rear_pod
-hub_boss_bore cut rear_pod
-stay_bore cut rear_pod
-// Bearing seats: matched 7303BW DB pairs, 24mm center spacing.
+bored_frame := solid(case_outer)
+tubes.body union bored_frame
+boss union bored_frame
+coupling_chamber union bored_frame
+construction chamber_front_flange := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 27mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: 21mm)
+  hub_foot distance(in: (-116mm, -109mm), along: pair.pinion_member.ax) q})
+chamber_front_flange union bored_frame
+construction service_fasteners := interfaces.CaseCoverFasteners()
+service_fasteners seats(turn: 0deg, up: pair.pinion_member.ax, east: flip) hub_foot
+service_fasteners.body union bored_frame
+pod_carrier union bored_frame
+case_bore cut bored_frame
+right_seat cut bored_frame
+boss_bore cut bored_frame
+stay_bore cut bored_frame
+coupling_bore cut bored_frame
+// Add seats after boring, as a separate solid stage so the bores do not erase them.
+unsplit_frame := solid(bored_frame)
+bored_rear_pod := solid(dropout)
+hub_boss union bored_rear_pod
+pod_flange union bored_rear_pod
+dropout_bore cut bored_rear_pod
+hub_way cut bored_rear_pod
+axle_way cut bored_rear_pod
+hub_boss_bore cut bored_rear_pod
+stay_bore cut bored_rear_pod
+rear_pod := solid(bored_rear_pod)
+// Bearing seats: 7303BW envelopes at stations 16/36, 20 mm center spacing.
+// The first bearing clears the tooth shell, which extends to station 7.40 mm.
 diaphragm_set := { q | q in std.sets.Cylinder(bb_line, r: shell_id / 2)
     std.origin distance(in: (diaphragm.x, diaphragm.y), along: bb_line) q }
 construction diaphragm_ring := solid(diaphragm_set)
-diaphragm_ring union frame_main
+diaphragm_ring union unsplit_frame
 pinion_seat_set := { q | q in std.sets.Cylinder(pair.pinion_member.ax, r: boss_r - wall + 0.5mm)
     pair.pinion_member.foot distance(in: (pinion_bearing.x, pinion_bearing.y), along: pair.pinion_member.ax) q }
 construction pinion_seat := solid(pinion_seat_set)
@@ -320,8 +352,12 @@ construction second_seat := solid({q | q in std.sets.Cylinder(pair.pinion_member
     pair.pinion_member.foot distance(in: (29mm, 43mm), along: pair.pinion_member.ax) q})
 construction hub_pinion_seat := pinion_seat at(under: flip) 180deg
 construction hub_second_seat := second_seat at(under: flip) 180deg
-pinion_seat union frame_main
-second_seat union frame_main
+construction front_bearing_stop := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 24.5mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: 20.5mm)
+  pair.pinion_member.foot distance(in: (7mm, 9mm), along: pair.pinion_member.ax) q})
+front_bearing_stop union unsplit_frame
+pinion_seat union unsplit_frame
+second_seat union unsplit_frame
 hub_pinion_seat union rear_pod
 hub_second_seat union rear_pod
 construction shaft_gland := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: boss_r - wall + 0.5mm)
@@ -331,8 +367,10 @@ construction shaft_seal_drill := solid({q | q in std.sets.Cylinder(pair.pinion_m
   pair.pinion_member.foot distance(in: (44.9mm, 53mm), along: pair.pinion_member.ax) q})
 construction rear_gland := shaft_gland at(under: flip) 180deg
 construction rear_seal_drill := shaft_seal_drill at(under: flip) 180deg
-shaft_gland union frame_main
-shaft_seal_drill cut frame_main
+// Front bearing stack loads from the rear before its removable seal carrier.
+construction front_loading_bore := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 24mm)
+  pair.pinion_member.foot distance(in: (43mm, 53mm), along: pair.pinion_member.ax) q})
+front_loading_bore cut unsplit_frame
 rear_gland union rear_pod
 rear_seal_drill cut rear_pod
 construction hub_seal_drill := solid({q | q in std.sets.Cylinder(axle_line, r: 21mm)
@@ -341,7 +379,7 @@ hub_seal_drill cut rear_pod
 construction ring_support := solid({q | q in std.sets.Cylinder(bb_line, r: shell_id / 2)
   q not in std.sets.Cylinder(bb_line, r: 47mm)
   std.origin distance(in: (-4mm, 3mm), along: bb_line) q})
-ring_support union frame_main
+ring_support union unsplit_frame
 // Four M6 mounting holes and two 6mm locating dowels on a 132mm circle.
 repeat 4 as i {
   c := point
@@ -354,7 +392,7 @@ repeat 4 as i {
   construction mount_drill := solid({q | q in std.sets.Cylinder(ax, r: 3.3mm)
     c distance(in: (-1mm, 12mm), along: ax) q})
   mount_drill cut rear_pod
-  mount_drill cut frame_main
+  mount_drill cut unsplit_frame
 }
 repeat 2 as i {
   c := point
@@ -366,7 +404,7 @@ repeat 2 as i {
   construction drill := solid({q | q in std.sets.Cylinder(ax, r: 3mm)
     c distance(in: (0mm, 11mm), along: ax) q})
   drill cut rear_pod
-  drill cut frame_main
+  drill cut unsplit_frame
 }
 repeat 6 as i {
   c := point
@@ -376,12 +414,12 @@ repeat 6 as i {
   repeat 2 as side {
     construction tapped_pilot := solid({q | q in std.sets.Cylinder(ax, r: 2.1mm)
       c distance(in: (if(side == 0, -36.6mm, 26.5mm), if(side == 0, -26.5mm, 36.6mm)), along: ax) q})
-    tapped_pilot cut frame_main
+    tapped_pilot cut unsplit_frame
   }
 }
 // Separate outboard service cover, with an annular bolt land and static face seal.
 construction cover_land := solid({q | q in std.sets.Cylinder(axle_line, r: 63mm)
-  q not in std.sets.Cylinder(axle_line, r: 51mm)
+  q not in std.sets.Cylinder(axle_line, r: 51.1mm)
   axle_c distance(in: (-99mm, -91mm), along: axle_line) q})
 cover_land union rear_pod
 rear_cover_station := At(axle_line, axle_c, d: -105mm)
@@ -409,20 +447,105 @@ repeat 6 as i {
   tap_drill cut rear_pod
 }
 // Dry service chamber has a removable half-shell; split coupling lifts out radially.
-construction chamber_half := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 24mm)
-  hub_foot distance(in: (-110mm, -52mm), along: pair.pinion_member.ax) q
+construction chamber_half := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 34mm)
+  hub_foot distance(in: (-116mm, -52mm), along: pair.pinion_member.ax) q
   hub_foot distance(>= 0mm, along: flip) q})
 service_cover := solid(coupling_chamber)
+chamber_front_flange union service_cover
+service_fasteners.body union service_cover
 chamber_half common service_cover
 coupling_bore cut service_cover
-service_cover cut frame_main
-// This union is a clearance target; frame_main and rear_pod remain separate service parts.
+chamber_half cut unsplit_frame
+service_fasteners.clearance_holes cut service_cover
+service_fasteners.tap_holes cut unsplit_frame
+// The assembled frame below is a clearance target; covers remain separate parts.
 left_cap_station := At(bb_line, std.origin, d: case_left)
 right_cap_station := At(bb_line, std.origin, d: case_right)
 left_cap := interfaces.EndCap()
 left_cap seats(turn: 0deg, up: std.y, east: std.x) left_cap_station.p
 right_cap := interfaces.EndCap()
 right_cap seats(turn: 0deg, up: drive_side, east: std.x) right_cap_station.p
+// The non-drive stay must meet the fixed shell, not pass through the removable
+// cap and its spindle bearing. Add a short weld collar outside the cap rim,
+// then clear the complete axial withdrawal envelope of that cap.
+construction stay_root_collar := solid({q |
+  q in std.sets.Cylinder(tubes.chainstay_l.ax, r: 14mm)
+  q in std.sets.Cylinder(bb_line, r: 78mm)
+  q not in std.sets.Cylinder(bb_line, r: 62mm)
+  std.origin distance(in: (-90mm, 0mm), along: std.x) q
+  std.origin distance(in: (0mm, 75mm), along: std.y) q
+  std.origin distance(in: (-30mm, 30mm), along: std.z) q
+})
+stay_root_collar union unsplit_frame
+construction left_cap_access := solid({q |
+  q in std.sets.Cylinder(bb_line, r: shell_od / 2 + 0.5mm)
+  std.origin distance(in: (case_left, 100mm), along: bb_line) q
+})
+left_cap_access cut unsplit_frame
+
+// The extended boss has a closed forward end outside the BB oil cavity.
+
+// The drive cap shares a planar split with the pinion housing. A round cap
+// added after the pinion bore would close that bore again. Give this cap the
+// outboard housing lobe instead, retaining the existing bearing-seat geometry.
+construction pinion_split_flange := solid({q |
+  q in std.sets.Cylinder(pair.pinion_member.ax, r: 32mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: pinion_ac.D / 2)
+  pair.pinion_member.foot distance(in: (4mm, 44mm), along: pair.pinion_member.ax) q
+  std.origin distance(in: (case_right - 6mm, case_right + 6mm), along: bb_line) q
+})
+case_bore cut pinion_split_flange
+pinion_split_flange union unsplit_frame
+lid_mount_station := At(pair.pinion_member.ax, pair.pinion_member.foot, d: 36mm)
+repeat 2 as side {
+  lid_mount := point
+  lid_mount_station.p distance(0mm, along: std.x) lid_mount
+  lid_mount_station.p distance(if(side == 0, -29mm, 29mm), along: std.z) lid_mount
+  std.origin distance(case_right, along: std.y) lid_mount
+  lid_mount_end := frame.Beside(lid_mount, dy: 10mm)
+  construction lid_mount_axis := line(lid_mount, lid_mount_end.p)
+  construction lid_lug := solid({q | q in std.sets.Cylinder(lid_mount_axis, r: 5mm)
+    lid_mount distance(in: (-8mm, 10mm), along: lid_mount_axis) q})
+  lid_lug union unsplit_frame
+}
+// The lobe ends on a plane parallel to BB-cap withdrawal. The shaft-case
+// tube is removable; no fixed neck traps the projecting pinion spline.
+lid_end := At(pair.pinion_member.ax, pair.pinion_member.foot, d: boss_behind)
+construction outboard_lobe_region := solid({q |
+  std.origin distance(<= 80mm, along: std.x) q
+  std.origin distance(in: (-80mm, 80mm), along: std.z) q
+  lid_end.p distance(>= 0mm, along: std.x) q
+  std.origin distance(in: (-90mm, case_right), along: bb_line) q
+})
+construction outboard_lobe := solid(unsplit_frame)
+outboard_lobe_region common outboard_lobe
+// Cope the cap's plate and pilot to both the existing bore and housing wall.
+boss_bore cut right_cap.body
+unsplit_frame cut right_cap.body
+frame_main := solid(unsplit_frame)
+outboard_lobe_region cut frame_main
+// Keep the coped cap and final union in separate solids: cuts on the cap
+// otherwise also remove the lobe that came from that same housing.
+drive_cap := solid(right_cap.body)
+outboard_lobe union drive_cap
+repeat 2 as side {
+  construction lid_clearance := solid({q | q in std.sets.Cylinder(lid_mount_axis[side], r: 2.75mm)
+    lid_mount[side] distance(in: (-9mm, 0mm), along: lid_mount_axis[side]) q})
+  construction lid_tap := solid({q | q in std.sets.Cylinder(lid_mount_axis[side], r: 2.1mm)
+    lid_mount[side] distance(in: (0mm, 10.1mm), along: lid_mount_axis[side]) q})
+  lid_clearance cut drive_cap
+  lid_tap cut frame_main
+}
+// The retained circular pilot centers the cap; a clocking dowel registers the
+// split bearing bores. Finish those bores with the cap dowelled and clamped.
+lid_dowel := point
+fix((0mm, case_right, 59.5mm)) lid_dowel
+lid_dowel_end := frame.Beside(lid_dowel, dy: 10mm)
+construction lid_dowel_axis := line(lid_dowel, lid_dowel_end.p)
+construction lid_dowel_drill := solid({q | q in std.sets.Cylinder(lid_dowel_axis, r: 2mm)
+  lid_dowel distance(in: (-4.6mm, 6mm), along: lid_dowel_axis) q})
+lid_dowel_drill cut drive_cap
+lid_dowel_drill cut frame_main
 construction bearing_cup := solid(left_cap.body)
 // Ring gear is located by a replaceable keyed adapter, not by unquantified press-fit friction.
 ring_adapter := solid({q | q in std.sets.Cylinder(bb_line, r: shell_id / 2)
@@ -506,6 +629,71 @@ hub_spline_mask seats(turn: 0deg, up: std.y, east: std.x) hub_spline_station.p
 hub_male.body cut hub_spline_mask.body
 hub_spline_mask.body cut hub
 
+// M48x1 seal/outer-race carrier installs axially from the rear after the cap
+// and pinion stack are fitted. A M34x1 spigot accepts the removable case tube.
+front_seal_carrier := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 24mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: 14mm)
+  pair.pinion_member.foot distance(in: (43mm, 52mm), along: pair.pinion_member.ax) q})
+construction seal_carrier_flange := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 26.5mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: tube_id / 2)
+  pair.pinion_member.foot distance(in: (52mm, 55mm), along: pair.pinion_member.ax) q})
+construction seal_carrier_spigot := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 17mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: tube_id / 2)
+  pair.pinion_member.foot distance(in: (55mm, 63mm), along: pair.pinion_member.ax) q})
+seal_carrier_flange union front_seal_carrier
+seal_carrier_spigot union front_seal_carrier
+// M3 dog-point lock prevents the M48 carrier turning when the case is fitted.
+carrier_lock_station := At(pair.pinion_member.ax, pair.pinion_member.foot, d: 50mm)
+carrier_lock_end := point
+construction carrier_lock_axis := line(carrier_lock_station.p, carrier_lock_end)
+carrier_lock_axis parallel(sense: same) flip
+length(1mm) carrier_lock_axis
+construction carrier_lock_tap := solid({q | q in std.sets.Cylinder(carrier_lock_axis, r: 1.25mm)
+  carrier_lock_station.p distance(in: (23.8mm, 28mm), along: carrier_lock_axis) q})
+construction carrier_lock_pocket := solid({q | q in std.sets.Cylinder(carrier_lock_axis, r: 1mm)
+  carrier_lock_station.p distance(in: (22.8mm, 24.2mm), along: carrier_lock_axis) q})
+carrier_lock_tap cut drive_cap
+carrier_lock_pocket cut front_seal_carrier
+carrier_lock_screw := solid({q | q in std.sets.Cylinder(carrier_lock_axis, r: 1.5mm)
+  carrier_lock_station.p distance(in: (24mm, 27mm), along: carrier_lock_axis) q})
+construction carrier_lock_dog := solid({q | q in std.sets.Cylinder(carrier_lock_axis, r: 1mm)
+  carrier_lock_station.p distance(in: (23mm, 24mm), along: carrier_lock_axis) q})
+carrier_lock_dog union carrier_lock_screw
+
+// Two-piece dry-chamber closure captures the case tube's rear shoulder.
+// Assemble its halves radially after the tube is screwed into the front carrier.
+construction rear_case_closure_blank := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 27mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: 14.1mm)
+  hub_foot distance(in: (-124mm, -116mm), along: pair.pinion_member.ax) q})
+construction closure_pilot := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 20.9mm)
+  q not in std.sets.Cylinder(pair.pinion_member.ax, r: 14.1mm)
+  hub_foot distance(in: (-116mm, -112mm), along: pair.pinion_member.ax) q})
+closure_pilot union rear_case_closure_blank
+construction closure_shoulder_groove := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 16.1mm)
+  hub_foot distance(in: (-116.1mm, -113.9mm), along: pair.pinion_member.ax) q
+  hub_foot distance(in: (-15.05mm, 15.05mm), along: flip) q})
+closure_shoulder_groove cut rear_case_closure_blank
+construction closure_oring_groove := solid({q | q in std.sets.Cylinder(pair.pinion_member.ax, r: 16.1mm)
+  hub_foot distance(in: (-122.2mm, -118.8mm), along: pair.pinion_member.ax) q})
+closure_oring_groove cut rear_case_closure_blank
+closure_station := At(pair.pinion_member.ax, hub_foot, d: -124mm)
+closure_bolts := interfaces.AxialBoltCircle(radius: 24mm, clearance: 2.2mm, tap: 1.65mm, face: 8mm, depth: 14mm)
+closure_bolts seats(turn: 45deg, up: pair.pinion_member.ax, east: flip) closure_station.p
+closure_bolts.clearance_holes cut rear_case_closure_blank
+closure_bolts.tap_holes cut frame_main
+closure_bolts.tap_holes cut service_cover
+repeat 2 as side {
+  construction closure_half := solid({q |
+    q in std.sets.Cylinder(pair.pinion_member.ax, r: 30mm)
+    hub_foot distance(in: (-125mm, -111mm), along: pair.pinion_member.ax) q
+    hub_foot distance(in: (if(side == 0, 0mm, -40mm), if(side == 0, 40mm, 0mm)), along: flip) q})
+  rear_case_closure := solid(rear_case_closure_blank)
+  closure_half common rear_case_closure
+}
+case_oring_station := At(pair.pinion_member.ax, hub_foot, d: -120.5mm)
+case_oring := interfaces.Oring(major: 15.25mm, section: 2.5mm)
+case_oring seats(turn: 0deg, up: pair.pinion_member.ax, east: flip) case_oring_station.p
+
 // -- bearings and retaining rings ------------------------------------------------------------------
 // A bearing is seated by its outside in a station of the body that carries it, the station's axis
 // running the way the bearing faces (`std.ports.Station`, `seats_in`): the room it takes is cut
@@ -531,17 +719,18 @@ left_shoulder := {at: left_shoulder_f.at}
 left_bb := std.bearings.Bearing(std.bearings.b6805)
 left_bb.right abuts left_shoulder
 sleeve_st := std.ports.Station(bb_line, std.origin, d: (diaphragm.x + diaphragm.y) / 2,
-  toward: drive_side, east: std.x, host: frame_main)
+  toward: drive_side, east: std.x, host: unsplit_frame)
 sleeve_bb := std.bearings.Bearing(sun_bearing)
 sleeve_bb.od seats_in sleeve_st.seat
-// the pinions' matched pairs, back to back
+// Cut the common housing before splitting off its cap, so both halves receive
+// the bearing seats. The pinions' matched pairs are back to back.
 bb_pinion_st := std.ports.Station(pair.pinion_member.ax, pair.pinion_member.foot,
   d: (pinion_bearing.x + pinion_bearing.y) / 2, toward: pair.pinion_member.ax, east: flip,
-  host: frame_main)
+  host: unsplit_frame)
 bb_pinion_bb := std.bearings.Bearing(pinion_ac)
 bb_pinion_bb.od seats_in bb_pinion_st.seat
 bb_second_st := std.ports.Station(pair.pinion_member.ax, pair.pinion_member.foot, d: pinion_second,
-  toward: rear, east: flip, host: frame_main)
+  toward: rear, east: flip, host: unsplit_frame)
 bb_second_bb := std.bearings.Bearing(pinion_ac)
 bb_second_bb.od seats_in bb_second_st.seat
 hub_pinion_st := std.ports.Station(pair.pinion_member.ax, hub_foot,
@@ -582,18 +771,20 @@ left_static_pos := At(bb_line, std.origin, d: 32.4mm)
 right_static_pos := At(bb_line, std.origin, d: -32.4mm)
 left_static_seal := interfaces.Oring(major: 54.15mm, section: 2.5mm)
 left_static_seal seats(turn: 0deg, up: std.y, east: std.x) left_static_pos.p
-right_static_seal := interfaces.Oring(major: 54.15mm, section: 2.5mm)
+// The drive cap uses sealant on its metal-to-metal split face; the old circular
+// O-ring is interrupted by the pinion lobe and is not a fitted part.
+construction right_static_seal := interfaces.Oring(major: 54.15mm, section: 2.5mm)
 right_static_seal seats(turn: 0deg, up: std.y, east: std.x) right_static_pos.p
 // Ground bearing spacers and retaining envelopes (threads specified in the drawing notes).
-spacer_pos := At(pair.pinion_member.ax, pair.pinion_member.foot, d: 19mm)
-inner_spacer := interfaces.Annulus(d: 17.05mm, D: 24mm, length: 10mm)
+spacer_pos := At(pair.pinion_member.ax, pair.pinion_member.foot, d: 23mm)
+inner_spacer := interfaces.Annulus(d: 17.05mm, D: 24mm, length: 6mm)
 inner_spacer seats(turn: 0deg, up: pair.pinion_member.ax, east: flip) spacer_pos.p
-outer_spacer := interfaces.Annulus(d: 41mm, D: 47mm, length: 10mm)
+outer_spacer := interfaces.Annulus(d: 41mm, D: 47mm, length: 6mm)
 outer_spacer seats(turn: 0deg, up: pair.pinion_member.ax, east: flip) spacer_pos.p
 rear_inner_spacer := inner_spacer.body at(under: flip) 180deg
 rear_outer_spacer := outer_spacer.body at(under: flip) 180deg
 retainer_pos := At(pair.pinion_member.ax, pair.pinion_member.foot, d: 43mm)
-pinion_retainer := interfaces.Annulus(d: 28mm, D: 48mm, length: 2mm)
+construction pinion_retainer := interfaces.Annulus(d: 28mm, D: 48mm, length: 2mm)
 pinion_retainer seats(turn: 0deg, up: pair.pinion_member.ax, east: flip) retainer_pos.p
 rear_pinion_retainer := pinion_retainer.body at(under: flip) 180deg
 clip_stop_f := std.ports.FrameOn(pair.pinion_member.ax, pair.pinion_member.foot, d: 43.5mm,
@@ -635,7 +826,11 @@ rear_pod union frame
 rear_cover.body union frame
 service_cover union frame
 left_cap.body union frame
-right_cap.body union frame
+drive_cap union frame
+front_seal_carrier union frame
+carrier_lock_screw union frame
+shaft_case union frame
+repeat 2 as side { rear_case_closure[side] union frame }
 
 // Full-turn crank swept envelopes, not just the drawn pedal orientation.
 construction right_crank_sweep := solid({q | q in std.sets.Cylinder(bb_line, r: crank_throw + 12mm)
@@ -648,13 +843,21 @@ claim right_crank_sweep clear(2mm) frame
 claim left_crank_sweep clear(2mm) frame
 
 // -- claims ----------------------------------------------------------------------------------------
-// The shaft runs clear inside the chainstay, and every turning part clear of the frame.
+// Selected rotating-part and wheel clearances; this is not an exhaustive interference search.
 claim shaft clear(3mm) frame
 claim front_coupler.body clear(1mm) frame
 claim rear_coupler.body clear(1.9mm) frame
 claim rear_wheel.tire_envelope clear(6mm) frame
 claim rear_wheel.rim clear(6mm) frame
 claim box.carrier clear(0.5mm) frame
+// Focused checks for the cover and stay-root interference found in the cutaway.
+claim bb_pinion clear(0.5mm) frame
+claim bb_pinion clear(0.5mm) bb_pinion_bb.inner_ring
+construction pinion_loading_envelope := solid({q |
+  q in std.sets.Cylinder(pair.pinion_member.ax, r: 18mm)
+  pair.pinion_member.foot distance(in: (-7mm, 8mm), along: pair.pinion_member.ax) q})
+claim every q in bb_pinion: q in pinion_loading_envelope
+claim spindle clear(0.2mm) frame
 claim bb_gear clear(0.5mm) frame
 claim bb_gear_core clear(0.5mm) frame
 claim hub clear(0.5mm) frame

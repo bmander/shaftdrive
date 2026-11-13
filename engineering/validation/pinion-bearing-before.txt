@@ -1,0 +1,29 @@
+/workspace/work/enclosed-shell/bearing-before/drive.sv:718:1: warning[W113]: `rear_wheel.std.front` lies on `std.front`, and a relation reads points drawn in each: one plane in space, so the relation is read in space where one plane would read it on the plane
+/workspace/work/enclosed-shell/bearing-before/drive.sv: solved
+  claim offset == 0mm — theorem: pair.offset = 0 mm
+  4361 params, 4361 equations, structural rank 4361; DOF 0; 271 components: DOF 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, … and 259 more; 40 rigid cluster(s) in the distance graph
+  parts: 245 instances of 32 definitions
+  part singular: part `pair.pinion_cone` (`spiral_bevel.angled_bevel.PinionCone`) is singular at what it is given: its rows place 24 of its 25 own unknowns here, so a small change to its inputs may move it far or find no pose
+  claim bb_pinion clear(0.5mm) bb_6903.inner_ring — refuted, measured -2.2989448094608496 (interval [-2.4041507109217, -2.193738907999999])
+    deepest at (-44.143, -33.0002, 15.7885), between pair.pinion_blank.material.heel and bb_6903.inner_ring.ab
+/workspace/work/enclosed-shell/bearing-before/drive.sv: stages, in the order run (42.9 s in all): own time, then with the work it waited on
+     9.4 s    9.4 s  placed 457 planes (×54)
+    100 ms   100 ms  checked 245 parts
+    15.4 s   24.9 s  elaborated /workspace/work/enclosed-shell/bearing-before/drive.sv
+     0.9 s    0.9 s  solved for 4361 params
+     0.2 s   15.7 s  diagnosed /workspace/work/enclosed-shell/bearing-before/drive.sv
+     90 ms    95 ms  read the diagnosis through 245 parts
+     1.4 s   42.9 s  ran /workspace/work/enclosed-shell/bearing-before/drive.sv
+/workspace/work/enclosed-shell/bearing-before/drive.sv: solids, claims and parts, slowest first (15.5 s in all): own time, then with the work it waited on
+    12.1 s   15.5 s  judged claim bb_pinion clear(0.5mm) bb_6903.inner_ring  /workspace/work/enclosed-shell/bearing-before/drive.sv:784:1
+     2.9 s    2.9 s  evaluated bb_pinion  /workspace/work/enclosed-shell/bearing-before/drive.sv:150:1
+     0.4 s    0.4 s  evaluated bb_6903.inner_ring  /workspace/work/enclosed-shell/bearing-before/drive.sv:640:1
+      2 ms     2 ms  built bb_6903.inner_ring  /workspace/work/enclosed-shell/bearing-before/drive.sv:640:1
+      2 ms     2 ms  built box.planet[0].blank (×3)  /workspace/work/enclosed-shell/bearing-before/drive.sv:162:1
+      1 ms     1 ms  ranked the rows of `planetary.Planetary`
+      1 ms     1 ms  built box.planet[0].bore_cut (×3)  /workspace/work/enclosed-shell/bearing-before/drive.sv:162:1
+      1 ms     1 ms  ranked the rows of `gears.Helical` (×5)
+      1 ms     1 ms  built box.planet[0].blank  /workspace/work/enclosed-shell/bearing-before/drive.sv:723:1
+      1 ms     1 ms  ranked the rows of `spiral_bevel.angled_bevel.BevelPair`
+      0 ms     0 ms  built box.planet[0].bore_cut  /workspace/work/enclosed-shell/bearing-before/drive.sv:162:1
+      0 ms     0 ms  ranked the rows of `hardware.Bearing` (×9)

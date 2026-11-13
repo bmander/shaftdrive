@@ -47,8 +47,12 @@
     "bevel_tangential_N": 1481.4814814814815,
     "pinion_axial_N_worst_hand": 845.9492279413208,
     "pinion_transverse_N": 1677.1593834082682,
-    "proximal_bearing_radial_N_peak": 2515.7390751124026,
-    "bearing_C0_over_2x_radial": 1.5899900111148375,
+    "pinion_bearing_centers_mm": [
+      16.0,
+      36.0
+    ],
+    "proximal_bearing_radial_N_peak": 3018.886890134883,
+    "bearing_C0_over_2x_radial": 1.3249916759290314,
     "shaft_J_mm4": 8270.24266057513,
     "shaft_tau_MPa_peak": 21.764778542481416,
     "crank_referred_tube_windup_deg_conservative_460mm": 0.0885237311974841,

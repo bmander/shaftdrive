@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 BB = {
     'frame', 'shaft', 'bb_gear', 'bb_gear_core', 'bb_pinion', 'bb_pinion_core',
-    'box', 'front_coupler', 'spindle', 'right_6804', 'left_6804', 'sleeve_6805',
-    'bb_6903', 'bb_pinion_second', 'left_seal', 'right_seal', 'bb_pinion_seal',
+    'box', 'front_coupler', 'spindle', 'right_bb', 'left_bb', 'sleeve_bb',
+    'bb_pinion_bb', 'bb_second_bb', 'left_seal', 'right_seal', 'bb_pinion_seal',
     'left_static_seal', 'right_static_seal', 'inner_spacer', 'outer_spacer',
     'pinion_retainer', 'pinion_clip', 'sun_locknut', 'ring_adapter', 'adapter_spacer',
     'ring_dowel', 'spindle_adjuster',
@@ -25,10 +25,10 @@ BB = {
 REAR = {
     'frame', 'shaft', 'hub', 'thru_axle', 'hub_gear', 'hub_gear_core',
     'hub_pinion', 'hub_pinion_core', 'rear_coupler', 'rear_inner_spacer',
-    'rear_outer_spacer', 'rear_pinion_retainer', 'rear_pinion_clip', 'hub_6903',
-    'hub_pinion_second', 'right_6901', 'left_6901', 'hub_pinion_seal', 'hub_seal',
+    'rear_outer_spacer', 'rear_pinion_retainer', 'rear_pinion_clip', 'hub_pinion_bb',
+    'case_oring', 'hub_second_bb', 'right_hub_bb', 'left_hub_bb', 'hub_pinion_seal', 'hub_seal',
     'rear_oring', 'hub_inner_spacer', 'hub_locknut', 'axle_nut', 'right_endspacer',
-    'left_endspacer', 'right_hub_ring', 'left_hub_ring',
+    'left_endspacer',
 }
 
 
