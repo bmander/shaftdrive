@@ -77,13 +77,10 @@ run drive drive.sv \
   --stl "$out/stl/exact/ring_471_20.stl" --solid right_ring.ring.body \
   --stl "$out/stl/exact/ring_472_24.stl" --solid right_hub_ring.ring.body
 
-# The bearings near the hub: their rings build, but their balls mesh to nothing so far from the
-# origin (README, finding 19), so the balls are written in a run of their own, which is expected to
-# fail and does not fail the job.
+# The bearings near the hub, whose balls meshed to nothing before v0.1.19 (README, finding 19).
 run hub_bearings drive.sv --no-check \
   --stl "$out/stl/exact/bearing_6903_outer.stl" --solid hub_6903.outer_ring \
-  --stl "$out/stl/exact/bearing_6901_outer.stl" --solid right_6901.outer_ring
-soft_run hub_balls drive.sv --no-check \
+  --stl "$out/stl/exact/bearing_6901_outer.stl" --solid right_6901.outer_ring \
   --stl "$out/stl/exact/bearing_6901_balls.stl" --solid right_6901.ball_set
 
 # The planetary's meshes, rolled over a sun pitch with every joint at its ratio: the claims judge
