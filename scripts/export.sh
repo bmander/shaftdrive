@@ -29,7 +29,7 @@ run planetary-exact planetary.sv --no-check \
  --png "$out/png/planetary_top.png" --view top --size 1100 --hide box.carrier
 run planetary-release planetary.sv --no-check --stl-backend mesh --stl "$out/stl/visualization/planet.stl" --solid box.planet[0].body
 args=()
-for binding in 'frame:frame' 'frame_main:frame_main' 'rear_pod:rear_pod' 'rear_cover:rear_cover.body' 'service_cover:service_cover' 'bearing_cup:left_cap.body' 'hub:hub' 'shaft:shaft' 'spindle:spindle' 'crank:right_crank.body' 'carrier:box.carrier_base' 'carrier_cover:box.plate_drive' 'rear_coupler:rear_coupler.body' 'ring_adapter:ring_adapter' 'thru_axle:thru_axle' 'bb_gear_core:bb_gear_core' 'hub_gear_core:hub_gear_core' 'bb_pinion_core:bb_pinion_core' 'hub_pinion_core:hub_pinion_core'; do
+for binding in 'frame:frame' 'frame_main:frame_main' 'rear_pod:rear_pod' 'rear_cover:rear_cover.body' 'service_cover:service_cover' 'bearing_cup:left_cap.body' 'drive_cap:drive_cap' 'hub:hub' 'shaft:shaft' 'spindle:spindle' 'crank:right_crank.body' 'carrier:box.carrier_base' 'carrier_cover:box.plate_drive' 'rear_coupler:rear_coupler.body' 'ring_adapter:ring_adapter' 'thru_axle:thru_axle' 'bb_gear_core:bb_gear_core' 'hub_gear_core:hub_gear_core' 'bb_pinion_core:bb_pinion_core' 'hub_pinion_core:hub_pinion_core'; do
  name=${binding%%:*}; solid=${binding#*:}
  args+=(--stl "$out/stl/exact/$name.stl" --solid "$solid")
 done

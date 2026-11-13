@@ -1,5 +1,6 @@
 {
-  "frame": "/workspace/work/revision-build/stl/exact/frame.stl",
+  "frame": "/workspace/work/shell-fixed/frame.stl",
+  "frame_sha256": "87adb46996e32fad40c99baae2d917ea397472354a505a0cef4cebd3c3459d1e",
   "axle_center_mm": [
     -454.6427168667722,
     0.0,
@@ -10,41 +11,41 @@
     30.0
   ],
   "tire_37": {
-    "measured_mm": 13.524212650107906,
-    "conservative_lower_mm": 13.414212650107906,
-    "upper_mm": 13.554212650107905,
+    "measured_mm": 13.524203835797522,
+    "conservative_lower_mm": 13.414203835797522,
+    "upper_mm": 13.554203835797521,
     "closest_frame_point_mm": [
-      -126.49129683151841,
-      -31.92504587583244,
-      19.475039920769632
+      -126.4971773425738,
+      -31.925513030650716,
+      19.476549183173727
     ],
-    "refined_triangles": 145645,
+    "refined_triangles": 134580,
     "tolerance_mm": 0.08,
     "mesh_error_mm": 0.03
   },
   "tire_40": {
-    "measured_mm": 11.906536495338578,
-    "conservative_lower_mm": 11.796536495338579,
-    "upper_mm": 11.936536495338578,
+    "measured_mm": 11.906524846999986,
+    "conservative_lower_mm": 11.796524846999986,
+    "upper_mm": 11.936524846999985,
     "closest_frame_point_mm": [
-      -124.98590621600549,
-      -31.80516681323449,
-      19.243560920159023
+      -125.00619386633237,
+      -31.806794083366793,
+      19.247137626012165
     ],
-    "refined_triangles": 144833,
+    "refined_triangles": 132885,
     "tolerance_mm": 0.08,
     "mesh_error_mm": 0.03
   },
   "tire_40_movement": {
-    "measured_mm": 9.906536495338578,
-    "conservative_lower_mm": 9.796536495338579,
-    "upper_mm": 9.936536495338578,
+    "measured_mm": 9.906524846999986,
+    "conservative_lower_mm": 9.796524846999986,
+    "upper_mm": 9.936524846999985,
     "closest_frame_point_mm": [
-      -124.98590621600549,
-      -31.80516681323449,
-      19.243560920159023
+      -125.00619386633237,
+      -31.806794083366793,
+      19.247137626012165
     ],
-    "refined_triangles": 144833,
+    "refined_triangles": 132885,
     "tolerance_mm": 0.08,
     "mesh_error_mm": 0.03
   },
@@ -57,10 +58,9 @@
       -41.0,
       68.02919235577185
     ],
-    "refined_triangles": 368901,
+    "refined_triangles": 367798,
     "tolerance_mm": 0.08,
     "mesh_error_mm": 0.036023959739863484
   },
-  "spoke_chord_error_mm": 0.006023959739863482,
-  "frame_sha256": "6f5ac023cafecebd2fb2f24752af549b2b464ab75643a23a216e8693b97d14a8"
+  "spoke_chord_error_mm": 0.006023959739863482
 }
