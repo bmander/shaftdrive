@@ -1,0 +1,32 @@
+drive.sv:820:1: warning[W113]: `rear_wheel.std.front` lies on `std.front`, and a relation reads points drawn in each: one plane in space, so the relation is read in space where one plane would read it on the plane
+drive.sv: solved
+  claim offset == 0mm — theorem: pair.offset = 0 mm
+solventc: [    3.8 s] built the solid by the Rust kernel: 1255394.244735 mm³, 480 faces, 1352 edges (3.826477761s)
+solventc: [    4.3 s] the STL output: 69848 triangles, sagging 9.905 µm at most and moved 0.034 µm at most by float32, against 10.000 µm, its shells checked (487.366432ms)
+solventc: [    4.3 s] staged the STL output
+solventc: [    5.6 s] built the solid by the Rust kernel: 825288.268837 mm³, 186 faces, 530 edges (1.288699288s)
+solventc: [    5.9 s] the STL output: 26730 triangles, sagging 9.349 µm at most and moved 0.034 µm at most by float32, against 10.000 µm, its shells checked (247.040298ms)
+solventc: [    5.9 s] staged the STL output
+solventc: [    7.4 s] built the solid by the Rust kernel: 76638.577927 mm³, 102 faces, 307 edges (1.491560315s)
+solventc: [    7.4 s] the STL output: 11460 triangles, sagging 9.905 µm at most and moved 0.005 µm at most by float32, against 10.000 µm, its shells checked (60.064398ms)
+solventc: [    7.4 s] staged the STL output
+solventc: [    7.5 s] built the solid by the Rust kernel: 32336.534186 mm³, 21 faces, 39 edges (19.480158ms)
+solventc: [    7.5 s] the STL output: 3976 triangles, sagging 9.102 µm at most and moved 0.016 µm at most by float32, against 10.000 µm, its shells checked (23.154318ms)
+solventc: [    7.5 s] staged the STL output
+solventc: [    7.5 s] built the solid by the Rust kernel: 34202.040819 mm³, 50 faces, 125 edges (29.300828ms)
+solventc: [    7.5 s] the STL output: 1688 triangles, sagging 4.819 µm at most and moved 0.016 µm at most by float32, against 10.000 µm, its shells checked (10.109254ms)
+solventc: [    7.5 s] staged the STL output
+solventc: [    7.6 s] built the solid by the Rust kernel: 5410.378969 mm³, 35 faces, 98 edges (34.803319ms)
+solventc: [    7.6 s] the STL output: 1202 triangles, sagging 5.971 µm at most and moved 0.004 µm at most by float32, against 10.000 µm, its shells checked (8.318059ms)
+solventc: [    7.6 s] staged the STL output
+drive.sv: stages, in the order run (43.5 s in all): own time, then with the work it waited on
+    15.6 s   15.6 s  placed 506 planes (×15)
+     0.1 s    0.1 s  checked 272 parts
+    18.4 s   34.1 s  elaborated drive.sv
+     1.1 s    1.1 s  solved for 5193 params
+     8.3 s   43.5 s  ran drive.sv
+drive.sv: solids, claims and parts, slowest first (4 ms in all): own time, then with the work it waited on
+      2 ms     2 ms  built box.planet[0].blank (×3)  drive.sv:161:1
+      1 ms     1 ms  built box.planet[0].bore_cut (×3)  drive.sv:161:1
+      1 ms     1 ms  built box.planet[0].blank  drive.sv:820:1
+      0 ms     0 ms  built box.planet[0].bore_cut  drive.sv:161:1

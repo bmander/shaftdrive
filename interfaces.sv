@@ -130,3 +130,56 @@ component SplitCoupler() {
   body := solid(left)
   right union body
 }
+
+// Four axial fastener positions; used by the removable dry-case closure.
+component AxialBoltCircle(radius: Length, clearance: Length, tap: Length, face: Length, depth: Length) {
+  clearance_holes := solid()
+  tap_holes := solid()
+  repeat 4 as i {
+    p := point
+    e := point
+    std.origin distance(radius * cos(i * 90deg), along: std.x) p
+    std.origin distance(radius * sin(i * 90deg), along: std.y) p
+    std.origin distance(0mm, along: std.z) p
+    p distance(0mm, along: std.x) e
+    p distance(0mm, along: std.y) e
+    p distance(1mm, along: std.z) e
+    construction ax := line(p, e)
+    construction clear_drill := solid({q | q in std.sets.Cylinder(ax, r: clearance)
+      p distance(in: (-0.1mm, face), along: ax) q})
+    construction tap_drill := solid({q | q in std.sets.Cylinder(ax, r: tap)
+      p distance(in: (face, depth), along: ax) q})
+    clear_drill union clearance_holes
+    tap_drill union tap_holes
+  }
+}
+
+// Lugs at the two ends of a longitudinally split dry-service chamber.
+// Local x is the cover removal direction; local z is the shaft axis.
+component CaseCoverFasteners() {
+  body := solid()
+  clearance_holes := solid()
+  tap_holes := solid()
+  repeat 2 as side {
+    repeat 2 as station {
+      p := point
+      e := point
+      std.origin distance(0mm, along: std.x) p
+      std.origin distance(if(side == 0, -24.5mm, 24.5mm), along: std.y) p
+      std.origin distance(if(station == 0, -106mm, -62mm), along: std.z) p
+      p distance(1mm, along: std.x) e
+      p distance(0mm, along: std.y) e
+      p distance(0mm, along: std.z) e
+      construction ax := line(p, e)
+      construction lug := solid({q | q in std.sets.Cylinder(ax, r: 5mm)
+        p distance(in: (-7mm, 7mm), along: ax) q})
+      construction clear_drill := solid({q | q in std.sets.Cylinder(ax, r: 2.2mm)
+        p distance(in: (0mm, 7.1mm), along: ax) q})
+      construction tap_drill := solid({q | q in std.sets.Cylinder(ax, r: 1.65mm)
+        p distance(in: (-7.1mm, 0mm), along: ax) q})
+      lug union body
+      clear_drill union clearance_holes
+      tap_drill union tap_holes
+    }
+  }
+}

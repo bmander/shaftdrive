@@ -19,9 +19,10 @@ split rear coupling.
 
 **Bottom-bracket cutaway.** A section through the crank spindle exposes the
 planetary step-up, front bevel pair and bearing supports inside the main case.
-The drive cover now incorporates the pinion-housing lobe, and the non-drive
-chainstay root clears the removable cap. See the
-[shell correction and clearance checks](engineering/shell-clearance.md).
+The drive cover incorporates the closed pinion-housing nose; a removable seal
+carrier and shaft-case tube provide assembly access. See the
+[shell checks](engineering/shell-clearance.md) and the
+[shaft-installation sequence and checks](engineering/shaft-assembly.md).
 
 ![Close-up section through the bottom bracket showing the planetary gears, front bevel pair and crank spindle bearings](docs/images/bottom-bracket-cutaway.png)
 

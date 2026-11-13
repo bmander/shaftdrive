@@ -149,7 +149,7 @@ boss_behind := 52mm
 wall := 2.5mm
 web := (-1.5mm, 4mm)                   // a bevel member's web: its band along the axis from the foot
                                        // of its mean point, filling its core out to the blank's back
-pinion_bearing := (5mm, 19mm)
+pinion_bearing := (9mm, 23mm)
 crank_throw := 170mm
 crank_face := 73mm
                                        // clear of the pinion's housing

@@ -1,0 +1,77 @@
+radial_entry 4.743672816956699 mm lower bound
+axial_engagement 4.74367113748552 mm lower bound
+{
+  "method": "1-Lipschitz continuous swept-envelope bounds over every STL triangle",
+  "removed": [
+    "rear wheel/pod",
+    "dry service cover",
+    "split rear case closure"
+  ],
+  "excluded_from_sweep": [
+    "M34 thread and carrier faces",
+    "front spline engagement",
+    "bearing/seal fits",
+    "gear tooth engagement"
+  ],
+  "front_mm": [
+    -38.98146406761266,
+    -39.0,
+    6.001861205516898
+  ],
+  "rear_mm": [
+    -415.66125279915906,
+    -68.99466823477226,
+    63.99813879448566
+  ],
+  "entry_direction": [
+    -0.15217391304347824,
+    1.238066473958548e-19,
+    -0.9883537323190701
+  ],
+  "rearward_offset_mm": 25,
+  "radial_travel_mm": 80,
+  "moving_envelope_max_signed_mm": {
+    "shaft_case.stl": -0.02998450624825466,
+    "shaft.stl": -0.029985268289877354,
+    "front_coupler.stl": -0.02999618097118173
+  },
+  "mesh_sha256": {
+    "frame_main.stl": "36f7d921f858255c97579d18ee4b38c2724fb252dc674e39287aaeea1593d759",
+    "drive_cap.stl": "3749086fe8e7606451576cf88a1d12a18b3dfbe6529ea05eff655b7164371db1",
+    "shaft_case.stl": "0e2be67a85c05fccce9c70e271068fb9e0be49d952e74f2a460a20c344085133",
+    "shaft.stl": "3f675576318676263958505d947addb39d729799b9e9553688874af9da98f7b2",
+    "front_coupler.stl": "8258abfbf7fc8a52b503d46e564a748c26e6fca97068a5f3991f296ddc368733"
+  },
+  "radial_entry": {
+    "measured_mm": 4.963672816956699,
+    "conservative_lower_mm": 4.743672816956699,
+    "upper_mm": 4.983672816956698,
+    "closest_frame_point_mm": [
+      -325.1226113637288,
+      -54.443620681762695,
+      69.87591902414958
+    ],
+    "refined_triangles": 103481,
+    "tolerance_mm": 0.2,
+    "mesh_error_mm": 0.02,
+    "passes_0_5mm": true
+  },
+  "axial_engagement": {
+    "measured_mm": 4.96367113748552,
+    "conservative_lower_mm": 4.74367113748552,
+    "upper_mm": 4.983671137485519,
+    "closest_frame_point_mm": [
+      -301.2025947570801,
+      -80.24404176076253,
+      52.04053465525309
+    ],
+    "refined_triangles": 374185,
+    "tolerance_mm": 0.2,
+    "mesh_error_mm": 0.02,
+    "passes_0_5mm": true
+  },
+  "initial_spline_tip_gap_mm": 3,
+  "front_case_thread_engagement_mm": 8,
+  "front_female_to_seal_axial_gap_mm": 1,
+  "front_female_to_carrier_radial_gap_mm": 1.5
+}
