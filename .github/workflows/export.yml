@@ -30,6 +30,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: engineering/requirements.txt
+
+      - name: Install engineering analysis dependencies
+        run: python -m pip install -r engineering/requirements.txt
+
       - name: Install solventc ${{ env.SOLVENTC_VERSION }}
         run: |
           set -eu
@@ -56,5 +65,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shaftdrive-${{ github.sha }}
-          path: out/
+          path: |
+            out/
+            engineering/
           if-no-files-found: warn

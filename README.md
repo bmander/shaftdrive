@@ -1,6 +1,6 @@
 > **Engineering revision — fixed gear, realistic rear wheel.** This checkout adds a 37-622 / 32-spoke wheel, symmetric ±30 mm flanges, 4.5° shaft splay, corrected 94.5° bevel pitch cones, positive torque joints and service/seal envelopes. See [the engineering report](engineering/specification.html), [calculation data](engineering/calculations.json) and [clearance bounds](engineering/clearance-final.json). It is not a fabrication release: bevel rolling clearance remains undecided, hub bearings need combined-load sizing, and the report identifies unfinished retention, sealing and structural details. Gear tooth shells and core bodies represent one intended manufactured part. Material-field STLs are visualization only.
 >
-> Reproduce with `SOLVENTC=/path/to/solventc scripts/export.sh /absolute/output`; `SKIP_ROLLING=1` skips the long tooth checks and explicitly leaves them unverified. Python dependencies for engineering checks/drawings: NumPy and Matplotlib. Original source notes below describe the baseline and can contain superseded dimensions.
+> Reproduce with `SOLVENTC=/path/to/solventc scripts/export.sh /absolute/output`; `SKIP_ROLLING=1` skips the long tooth checks and explicitly leaves them unverified. Install analysis dependencies with `python -m pip install -r engineering/requirements.txt`. The recorded compiler checks are in `engineering/validation/`; CI reruns them and uploads the report and drawings with the build artifacts. Original source notes below describe the baseline and can contain superseded dimensions.
 
 # A shaft-drive bicycle
 

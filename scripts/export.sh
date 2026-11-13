@@ -19,6 +19,7 @@ run() {
 }
 run dims-release dims.sv
 python engineering/verify.py > "$out/reports/physics.txt" || failed=1
+python engineering/check_clearance_math.py > "$out/reports/clearance-math.txt" || failed=1
 run wheel wheel.sv --no-check --png "$out/png/wheel.png" --view 300,20 --size 1200
 run planetary-exact planetary.sv --no-check \
  --stl "$out/stl/exact/sun.stl" --solid box.sun.body \
@@ -50,8 +51,8 @@ else
 fi
 MPLCONFIGDIR=/tmp/shaftdrive-mpl python engineering/drawings.py || failed=1
 python engineering/make_report.py || failed=1
-if rg -n '— refuted|error\[E' "$out/reports"; then failed=1; fi
-if rg -n '— undecided|continuous interval unproven' "$out/reports"; then
+if grep -nE '— refuted|error\[E' "$out"/reports/*.txt; then failed=1; fi
+if grep -nE '— undecided|continuous interval unproven' "$out"/reports/*.txt; then
  echo 'REVIEW REQUIRED: inconclusive / sampled-only checks remain. Read the engineering report.'
 fi
 exit "$failed"
