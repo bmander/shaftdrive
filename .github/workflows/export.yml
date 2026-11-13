@@ -10,7 +10,7 @@ on:
       solventc_version:
         description: "solventc release tag (or `latest`)"
         required: false
-        default: v0.1.19
+        default: v0.1.21
 
 concurrency:
   group: export-${{ github.ref }}
@@ -26,7 +26,7 @@ jobs:
     env:
       # The release the drive was written against; a repository variable or a manual run's
       # input chooses another.
-      SOLVENTC_VERSION: ${{ inputs.solventc_version || vars.SOLVENTC_VERSION || 'v0.1.19' }}
+      SOLVENTC_VERSION: ${{ inputs.solventc_version || vars.SOLVENTC_VERSION || 'v0.1.21' }}
     steps:
       - uses: actions/checkout@v4
 
