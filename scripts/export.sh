@@ -9,7 +9,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 out=${1:-out}
 solventc=${SOLVENTC:-solventc}
-mkdir -p "$out/png" "$out/stl/exact" "$out/stl/faceted" "$out/reports"
+mkdir -p "$out/png" "$out/stl/exact" "$out/reports"
 failed=()
 
 run() {   # run NAME ARGS…: one solventc run, its report in reports/NAME.txt
@@ -22,6 +22,16 @@ run() {   # run NAME ARGS…: one solventc run, its report in reports/NAME.txt
   echo "$name: exit $status in $((SECONDS - start)) s"
   echo "::endgroup::"
   [ "$status" -eq 0 ] || failed+=("$name (exit $status)")
+}
+
+soft=()
+soft_run() {   # soft_run NAME ARGS…: a run expected to fail on a known finding; noted, not fatal
+  local before=${#failed[@]}
+  run "$@"
+  if [ ${#failed[@]} -gt "$before" ]; then
+    soft+=("${failed[-1]}")
+    unset 'failed[-1]'
+  fi
 }
 
 "$solventc" --version
@@ -39,30 +49,42 @@ run planetary planetary.sv \
   --png "$out/png/planetary_top.png" --view top --size 1200 --hide box.carrier \
   --png "$out/png/planetary_iso.png" --view 30,35 --size 1200
 
-# The drive: solved, its clearance claims judged, every exactly built part written as an STL and
-# five pictures drawn, each solid built once.
+# The drive in its frame: solved, its clearance claims judged, every exactly built part written as
+# an STL and five pictures drawn, each solid built once.
 run drive drive.sv \
-  --png "$out/png/drive_iso.png" --view 300,25 --size 1600 \
-  --png "$out/png/drive_cutaway.png" --view 300,25 --size 1600 --hide frame \
-  --png "$out/png/drive_section.png" --view 290,30 --size 1600 --section 'y=-40mm' \
-  --png "$out/png/drive_top.png" --view top --size 1600 --hide frame \
+  --png "$out/png/drive_iso.png" --view 300,20 --size 1600 \
+  --png "$out/png/drive_cutaway.png" --view 300,20 --size 1600 --hide frame,bearing_cup \
+  --png "$out/png/drive_section.png" --view 290,25 --size 1600 --section 'y=-30mm' \
+  --png "$out/png/drive_top.png" --view top --size 1600 --hide frame,bearing_cup \
   --png "$out/png/drive_right.png" --view right --size 1600 \
   --stl "$out/stl/exact/frame.stl" --solid frame \
+  --stl "$out/stl/exact/bearing_cup.stl" --solid bearing_cup \
   --stl "$out/stl/exact/sun.stl" --solid box.sun.body \
   --stl "$out/stl/exact/ring.stl" --solid box.ring.body \
   --stl "$out/stl/exact/carrier.stl" --solid box.carrier \
   --stl "$out/stl/exact/shaft.stl" --solid shaft \
   --stl "$out/stl/exact/spindle.stl" --solid spindle \
   --stl "$out/stl/exact/hub.stl" --solid hub \
+  --stl "$out/stl/exact/thru_axle.stl" --solid thru_axle \
   --stl "$out/stl/exact/crank.stl" --solid right_crank.body \
+  --stl "$out/stl/exact/bb_gear.stl" --solid bb_gear \
+  --stl "$out/stl/exact/hub_gear.stl" --solid hub_gear \
   --stl "$out/stl/exact/bb_pinion.stl" --solid bb_pinion \
-  --stl "$out/stl/exact/hub_pinion.stl" --solid hub_pinion
+  --stl "$out/stl/exact/hub_pinion.stl" --solid hub_pinion \
+  --stl "$out/stl/exact/bearing_6804_outer.stl" --solid right_6804.outer_ring \
+  --stl "$out/stl/exact/bearing_6804_inner.stl" --solid right_6804.inner_ring \
+  --stl "$out/stl/exact/bearing_6804_balls.stl" --solid right_6804.ball_set \
+  --stl "$out/stl/exact/ring_471_20.stl" --solid right_ring.ring.body \
+  --stl "$out/stl/exact/ring_472_24.stl" --solid right_hub_ring.ring.body
 
-# The hypoid gears are read from their material fields where they stand in the bicycle, not built
-# (README), so they are written by the faceted kernel: meshes to look at, not to make parts from.
-run hypoid drive.sv --no-check --stl-backend mesh \
-  --stl "$out/stl/faceted/bb_gear.stl" --solid bb_gear \
-  --stl "$out/stl/faceted/hub_gear.stl" --solid hub_gear
+# The bearings near the hub: their rings build, but their balls mesh to nothing so far from the
+# origin (README, finding 19), so the balls are written in a run of their own, which is expected to
+# fail and does not fail the job.
+run hub_bearings drive.sv --no-check \
+  --stl "$out/stl/exact/bearing_6903_outer.stl" --solid hub_6903.outer_ring \
+  --stl "$out/stl/exact/bearing_6901_outer.stl" --solid right_6901.outer_ring
+soft_run hub_balls drive.sv --no-check \
+  --stl "$out/stl/exact/bearing_6901_balls.stl" --solid right_6901.ball_set
 
 # The planetary's meshes, rolled over a sun pitch with every joint at its ratio: the claims judge
 # the backlash at 37 poses (README: what solventc says of them).
@@ -84,8 +106,7 @@ summary=${GITHUB_STEP_SUMMARY:-/dev/null}
   echo "Pictures: $(cd "$out/png" && ls | tr '\n' ' ')"
   echo
   echo "STL, exact: $(cd "$out/stl/exact" && ls | tr '\n' ' ')"
-  echo
-  echo "STL, faceted from the field: $(cd "$out/stl/faceted" && ls | tr '\n' ' ')"
+  if [ ${#soft[@]} -gt 0 ]; then echo; echo "Known failures (README): ${soft[*]}"; fi
   if [ ${#failed[@]} -gt 0 ]; then echo; echo "**Failed runs:** ${failed[*]}"; fi
   if [ -n "$refuted" ]; then echo; echo '**Refuted claims:**'; echo '```'; echo "$refuted"; echo '```'; fi
 } >> "$summary"
