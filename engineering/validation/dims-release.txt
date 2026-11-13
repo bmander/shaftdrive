@@ -1,4 +1,4 @@
-work/shaftdrive/dims.sv: solved
+dims.sv: solved
   claim Zr == Zs + 2 * Zp — theorem: Zp = 15, Zr = 60, Zs = 30
   claim (Zs + Zr) / planets == floor((Zs + Zr) / planets) — theorem: Zr = 60, Zs = 30, planets = 3
   claim hf <= rpl * sin(alpha_t)^2 — theorem: alpha_t = 21.1728 deg, hf = 1.25 mm, rpl = 9.97667 mm
@@ -13,3 +13,9 @@ work/shaftdrive/dims.sv: solved
   claim abs(sin(bevel_delta_g) / sin(bevel_delta_p) - step_bevel) < 0.000001 — theorem: bevel_delta_g = 75.6588 deg, bevel_delta_p = 18.8412 deg, step_bevel = 3
   claim abs(bevel_delta_p + bevel_delta_g - bevel_angle) < 0.000001deg — theorem: bevel_angle = 94.5 deg, bevel_delta_g = 75.6588 deg, bevel_delta_p = 18.8412 deg
   0 params, 0 equations, structural rank 0; DOF 0
+dims.sv: stages, in the order run (3 ms in all): own time, then with the work it waited on
+      3 ms     3 ms  elaborated dims.sv
+      0 ms     0 ms  solved for 0 params
+      0 ms     0 ms  diagnosed dims.sv
+      0 ms     3 ms  ran dims.sv
+dims.sv: solids, claims and parts, slowest first (-0 ms in all): own time, then with the work it waited on

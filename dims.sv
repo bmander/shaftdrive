@@ -138,8 +138,6 @@ shell_id := 110mm
 case_left := 36.5mm                      // its faces, either side of the mid-plane: the left one open for
 case_right := -36.5mm                    // the bearing cup, the right one closed round the right bearing
 end_wall := 7mm
-bearing_od := 37mm
-sleeve_bearing_od := 62mm
 diaphragm := (-13mm, -4mm)
                                        // planetary and the bevel gear
 cup := (29mm, 38.5mm)                    // the left bearing cup, pressed into the shell's open end
@@ -186,16 +184,10 @@ rear_case_r := 60mm
 rear_case := (-99mm, -41mm)
 axle_d := 12mm                         // the thru-axle
 
-// -- the bearings and retaining rings (ISO 15, DIN 471 / 472) ----------------------------------------
-b6804 := {d: 20mm, D: 32mm, B: 7mm, balls: 14, dw: 3.5mm}
-b6805 := {d: 25mm, D: 37mm, B: 7mm, balls: 16, dw: 3.5mm}
-b6903 := {d: 17mm, D: 30mm, B: 7mm, balls: 12, dw: 3.97mm}
-b6901 := {d: 12mm, D: 24mm, B: 6mm, balls: 10, dw: 3.97mm}
-// a ring's groove's diameter, its thickness, its band, and its eyes' circle, size and hole
-r471_20 := {groove: 19mm, t: 1.2mm, band: 2.6mm, r_eye: 13.4mm, eye: 3.4mm, hole: 1.5mm}
-r471_25 := {groove: 23.9mm, t: 1.2mm, band: 3mm, r_eye: 16.4mm, eye: 3.6mm, hole: 1.5mm}
-r471_17 := {groove: 16.2mm, t: 1mm, band: 2.3mm, r_eye: 11.6mm, eye: 3mm, hole: 1.2mm}
-r472_24 := {groove: 25.2mm, t: 1.2mm, band: 2.6mm, r_eye: 9.6mm, eye: 3.4mm, hole: 1.5mm}
+// -- the bearings and retaining rings ---------------------------------------------------------------
+// The catalogue's rows are `std.bearings` (ISO 15: b6901 at the hub, b6805 in the bracket's caps)
+// and `std.retaining` (DIN 471 / 472).  The two no catalogue there holds, `sun_bearing` and the
+// pinions' angular-contact `pinion_ac`, are the drive's own, below; each is a `BearingSize`.
 
 // -- claims over the design table --------------------------------------------------------------------
 claim Zr == Zs + 2 * Zp
@@ -239,7 +231,6 @@ planet_root_screen := sigma_planet * service_factor * planet_share_factor
 claim planet_root_screen <= case_steel / 1.5
 
 // Detailed bought-part envelopes and shaft stations. Bearing internals are illustrative only.
-bb_bearing := {d: 25mm, D: 37mm, B: 7mm, balls: 16, dw: 3.5mm}
 sun_bearing := {d: 35mm, D: 62mm, B: 9mm, balls: 13, dw: 6.35mm}
 pinion_ac := {d: 17mm, D: 47mm, B: 14mm, balls: 10, dw: 8mm}
 case_bearing_y := 42.5mm
