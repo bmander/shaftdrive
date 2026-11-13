@@ -54,15 +54,19 @@ run drive drive.sv \
   --stl "$out/stl/exact/shaft.stl" --solid shaft \
   --stl "$out/stl/exact/spindle.stl" --solid spindle \
   --stl "$out/stl/exact/hub.stl" --solid hub \
-  --stl "$out/stl/exact/crank.stl" --solid right_crank.body
+  --stl "$out/stl/exact/crank.stl" --solid right_crank.body \
+  --stl "$out/stl/exact/bb_pinion.stl" --solid bb_pinion \
+  --stl "$out/stl/exact/hub_pinion.stl" --solid hub_pinion
 
-# The hypoid members are read from their material fields, not built (README), so they are
-# written by the faceted kernel: meshes to look at, not to make parts from.
+# The hypoid gears are read from their material fields where they stand in the bicycle, not built
+# (README), so they are written by the faceted kernel: meshes to look at, not to make parts from.
 run hypoid drive.sv --no-check --stl-backend mesh \
   --stl "$out/stl/faceted/bb_gear.stl" --solid bb_gear \
-  --stl "$out/stl/faceted/bb_pinion.stl" --solid bb_pinion \
-  --stl "$out/stl/faceted/hub_gear.stl" --solid hub_gear \
-  --stl "$out/stl/faceted/hub_pinion.stl" --solid hub_pinion
+  --stl "$out/stl/faceted/hub_gear.stl" --solid hub_gear
+
+# The planetary's meshes, rolled over a sun pitch with every joint at its ratio: the claims judge
+# the backlash at 37 poses (README: what solventc says of them).
+run mesh mesh.sv
 
 refuted=$(grep -h -E 'refuted|claim independent' "$out"/reports/*.txt || true)
 
@@ -74,6 +78,7 @@ summary=${GITHUB_STEP_SUMMARY:-/dev/null}
   "$solventc" --version
   head -3 "$out/reports/drive.txt"
   grep -E '^  claim' "$out/reports/drive.txt"
+  grep -E '^  claim' "$out/reports/mesh.txt" | cut -c1-200
   echo '```'
   echo
   echo "Pictures: $(cd "$out/png" && ls | tr '\n' ' ')"
