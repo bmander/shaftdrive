@@ -1,0 +1,74 @@
+drive.sv:628:1: warning[W113]: `rear_wheel.std.front` lies on `std.front`, and a relation reads points drawn in each: one plane in space, so the relation is read in space where one plane would read it on the plane
+drive.sv: solved
+  claim offset == 0mm — theorem: pair.offset = 0 mm
+  4340 params, 4340 equations, structural rank 4340; DOF 0; 270 components: DOF 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, … and 258 more; 40 rigid cluster(s) in the distance graph
+  parts: 240 instances of 32 definitions
+  part singular: part `pair.pinion_cone` (`spiral_bevel.angled_bevel.PinionCone`) is singular at what it is given: its rows place 24 of its 25 own unknowns here, so a small change to its inputs may move it far or find no pose
+  claim right_crank_sweep clear(2mm) frame — holds, measured 3.501817678224157 (interval [3.5006176782241565, 3.503017678224157])
+  claim left_crank_sweep clear(2mm) frame — holds, measured 7.096219185859946 (interval [7.095019185859945, 7.0974191858599465])
+  claim shaft clear(3mm) frame — holds, measured 3.499882868710237 (interval [3.4986828687102367, 3.5010828687102373])
+  claim front_coupler.body clear(1mm) frame — holds, measured 1.499581673966592 (interval [1.4983816739665916, 1.5007816739665922])
+  claim rear_coupler.body clear(1.9mm) frame — holds, measured 2.000000000000041 (interval [1.9988000000000405, 2.001200000000041])
+  claim rear_wheel.tire_envelope clear(6mm) frame — holds, measured 11.954764861550865 (interval [11.953564861550863, 11.955964861550868])
+  claim rear_wheel.rim clear(6mm) frame — holds, measured 22.274234623856753 (interval [22.27303462385675, 22.275434623856757])
+  claim box.carrier clear(0.5mm) frame — holds, measured 5.200000000000028 (interval [5.198800000000027, 5.2012000000000285])
+  claim bb_gear clear(0.5mm) frame — holds, measured 5.676307725662559 (interval [5.662420418269806, 5.6901950330553115])
+  claim bb_gear_core clear(0.5mm) frame — holds, measured 3.4583840053974484 (interval [3.457184005397448, 3.4595840053974487])
+  claim hub clear(0.5mm) frame — holds, measured 3.9999999999999716 (interval [3.9987999999999713, 4.001199999999972])
+  claim hub_gear clear(0.5mm) frame — holds, measured 9.801831723946048 (interval [9.787944386617239, 9.815719061274857])
+  claim hub_gear_core clear(0.5mm) frame — holds, measured 10.5469477598302 (interval [10.545747759830197, 10.548147759830202])
+  claim box.sun.body clear(0.5mm) bb_pinion — holds, measured 16.65006566328261 (interval [16.635645718645247, 16.664485607919975])
+  claim right_6804.outer_ring clear(0.5mm) bb_pinion — holds, measured 14.541671354457579 (interval [14.536053449315212, 14.547289259599946])
+  claim hub clear(0.5mm) hub_pinion — holds, measured 17.128800733870804 (interval [17.123182828728435, 17.134418639013173])
+  claim right_crank.body clear(2mm) frame — holds, measured 10.089139041343966 (interval [10.087939041343963, 10.090339041343968])
+  claim left_crank.body clear(2mm) frame — holds, measured 25.631382029219445 (interval [25.63018202921944, 25.63258202921945])
+solventc: [    1.8 s] built the solid by the Rust kernel: 1107608.251029 mm³, 251 faces, 724 edges (1.823039626s)
+solventc: [    2.2 s] the STL output: 46280 triangles, sagging 9.905 µm at most and moved 0.034 µm at most by float32, against 10.000 µm, its shells checked (366.910003ms)
+solventc: [    2.2 s] staged the STL output
+solventc: [    2.3 s] built the solid by the Rust kernel: 32469.664202 mm³, 126 faces, 353 edges (121.060016ms)
+solventc: [    2.4 s] the STL output: 3712 triangles, sagging 8.867 µm at most and moved 0.002 µm at most by float32, against 10.000 µm, its shells checked (22.589194ms)
+solventc: [    2.4 s] staged the STL output
+solventc: [    2.4 s] built the solid by the Rust kernel: 6935.556657 mm³, 10 faces, 24 edges (7.616321ms)
+solventc: [    2.4 s] the STL output: 2328 triangles, sagging 9.905 µm at most and moved 0.002 µm at most by float32, against 10.000 µm, its shells checked (18.318757ms)
+solventc: [    2.4 s] staged the STL output
+solventc: [    2.8 s] built the solid by the Rust kernel: 73177.897707 mm³, 309 faces, 793 edges (362.577955ms)
+solventc: [    2.8 s] the STL output: 2504 triangles, sagging 9.100 µm at most and moved 0.004 µm at most by float32, against 10.000 µm, its shells checked (25.923631ms)
+solventc: [    2.8 s] staged the STL output
+solventc: [    2.9 s] built the solid by the Rust kernel: 85544.795427 mm³, 87 faces, 255 edges (91.937973ms)
+solventc: [    2.9 s] the STL output: 1548 triangles, sagging 6.390 µm at most and moved 0.009 µm at most by float32, against 10.000 µm, its shells checked (12.221531ms)
+solventc: [    2.9 s] staged the STL output
+solventc: [    2.9 s] built the solid by the Rust kernel: 16877.937297 mm³, 62 faces, 142 edges (34.620819ms)
+solventc: [    3.0 s] the STL output: 2926 triangles, sagging 6.425 µm at most and moved 0.004 µm at most by float32, against 10.000 µm, its shells checked (19.850702ms)
+solventc: [    3.0 s] staged the STL output
+solventc: [    3.0 s] built the solid by the Rust kernel: 16877.937297 mm³, 62 faces, 142 edges (36.191783ms)
+solventc: [    3.0 s] the STL output: 2926 triangles, sagging 6.425 µm at most and moved 0.016 µm at most by float32, against 10.000 µm, its shells checked (20.452698ms)
+solventc: [    3.0 s] staged the STL output
+solventc: /workspace/work/revision-build/png/drive_iso.png: `bb_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_iso.png: `hub_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_cutaway.png: `bb_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_cutaway.png: `hub_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_top.png: `bb_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_top.png: `hub_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_right.png: `bb_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+solventc: /workspace/work/revision-build/png/drive_right.png: `hub_gear` is drawn from its material field, not built: `pair.gear.cut.removal` is a continuous motion sweep, read by its field: no exact build of it was made (and 1 more of what it is made of, refused too)
+drive.sv: stages, in the order run (550.6 s in all): own time, then with the work it waited on
+    12.7 s   12.7 s  placed 457 planes (×54)
+     0.1 s    0.1 s  checked 240 parts
+    25.7 s   38.5 s  elaborated drive.sv
+     1.3 s    1.3 s  solved for 4340 params
+     0.3 s  203.9 s  diagnosed drive.sv
+     0.1 s    0.1 s  read the diagnosis through 240 parts
+   261.1 s  550.6 s  ran drive.sv
+drive.sv: solids, claims and parts, slowest first (249.3 s in all): own time, then with the work it waited on
+    34.5 s   60.4 s  judged claim hub_gear clear(0.5mm) frame  drive.sv:664:1
+    31.9 s   42.9 s  judged claim rear_wheel.tire_envelope clear(6mm) frame  drive.sv:658:1
+    26.0 s   26.0 s  evaluated hub_gear  drive.sv:152:1
+    23.9 s   23.9 s  evaluated bb_gear  drive.sv:117:1
+    20.7 s   44.7 s  judged claim bb_gear clear(0.5mm) frame  drive.sv:661:1
+    17.6 s   17.6 s  built bb_gear  drive.sv:117:1
+    17.5 s   17.5 s  built hub_gear  drive.sv:152:1
+    16.8 s   25.2 s  judged claim box.sun.body clear(0.5mm) bb_pinion  drive.sv:668:1
+    11.0 s   11.0 s  evaluated rear_wheel.tire_envelope  drive.sv:628:1
+     5.7 s    5.7 s  evaluated bb_pinion  drive.sv:150:1
+     3.8 s    3.8 s  evaluated hub_pinion  drive.sv:154:1
+     3.8 s    5.2 s  judged claim rear_wheel.rim clear(6mm) frame  drive.sv:659:1

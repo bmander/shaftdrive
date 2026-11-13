@@ -1,0 +1,30 @@
+bevel_mesh.sv: solved
+  claim offset == 0mm — theorem: pair.offset = 0 mm
+  219 params, 219 equations, structural rank 219; DOF 0; 3 rigid cluster(s) in the distance graph
+  parts: 26 instances of 12 definitions
+  part singular: part `pair.pinion_cone` (`spiral_bevel.angled_bevel.PinionCone`) is singular at what it is given: its rows place 18 of its 19 own unknowns here, so a small change to its inputs may move it far or find no pose
+  claim over t in (0, 6.666666666666667): gear_at clear(0.001mm) pinion_at — undecided, measured 0.011961450823733486 (interval [-0.006463463866725072, 0.030386365514192045]), sampling 37 poses (0 failed), t in [0deg, 6.666666666666667deg], 37 valid, worst at 1.851851851851852deg
+    nearest between gear_at.surface at (35.9267, -1.84346, -1.2074) and pair.pinion.cut.indexed[0].inner at (35.9237, -1.83386, -1.20093)
+    unresolved at 1.6666666666666667: disjointness is within geometric uncertainty
+    unresolved at 1.851851851851852: disjointness is within geometric uncertainty
+bevel_mesh.sv: stages, in the order run (1745.2 s in all): own time, then with the work it waited on
+      3 ms     3 ms  placed 12 planes (×4)
+      2 ms     2 ms  checked 26 parts
+     0.3 s    0.3 s  elaborated bevel_mesh.sv
+     0.4 s    0.4 s  solved for 219 params
+      2 ms     2 ms  followed t (×2)
+     20 ms 1744.3 s  diagnosed bevel_mesh.sv
+      4 ms     6 ms  read the diagnosis through 26 parts
+     0.2 s 1745.2 s  ran bevel_mesh.sv
+bevel_mesh.sv: solids, claims and parts, slowest first (1744.3 s in all): own time, then with the work it waited on
+  1077.0 s 1077.0 s  evaluated gear_at (×37)  bevel_mesh.sv:22:1
+   514.8 s 1744.3 s  judged claim over t in (0, 6.666666666666667): gear_at clear(0.001mm) pinion_at  bevel_mesh.sv:25:3
+   152.6 s  152.6 s  evaluated pinion_at (×37)  bevel_mesh.sv:23:1
+      1 ms     1 ms  ranked the rows of `spiral_bevel.angled_bevel.BevelPair`
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.PinionCone`
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.Topping` (×4)
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.FaceMill`
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.GearCone`
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.Blank` (×4)
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.ToothTrace`
+      0 ms     0 ms  ranked the rows of `spiral_bevel.angled_bevel.Balanced`

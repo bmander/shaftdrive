@@ -1,0 +1,15 @@
+work/shaftdrive/dims.sv: solved
+  claim Zr == Zs + 2 * Zp — theorem: Zp = 15, Zr = 60, Zs = 30
+  claim (Zs + Zr) / planets == floor((Zs + Zr) / planets) — theorem: Zr = 60, Zs = 30, planets = 3
+  claim hf <= rpl * sin(alpha_t)^2 — theorem: alpha_t = 21.1728 deg, hf = 1.25 mm, rpl = 9.97667 mm
+  claim eps_beta >= 1 — theorem: eps_beta = 2.00318
+  claim eps_sp >= 1.1 and eps_pr >= 1.1 — theorem: eps_pr = 1.3551, eps_sp = 1.19351
+  claim eps_sp + eps_beta >= 2.2 and eps_pr + eps_beta >= 2.2 — theorem: eps_beta = 2.00318, eps_pr = 1.3551, eps_sp = 1.19351
+  claim sigma_planet <= case_steel — theorem: case_steel = 4.5e+08 Pa, sigma_planet = 1.12464e+08 Pa
+  claim shaft_tau <= 200MPa — theorem: shaft_tau = 2.17648e+07 Pa
+  claim spindle_tau <= 300MPa — theorem: spindle_tau = 5.94655e+07 Pa
+  claim wind <= 0.5deg — theorem: wind = 0.0885237 deg
+  claim planet_root_screen <= case_steel / 1.5 — theorem: case_steel = 4.5e+08 Pa, planet_root_screen = 2.92407e+08 Pa
+  claim abs(sin(bevel_delta_g) / sin(bevel_delta_p) - step_bevel) < 0.000001 — theorem: bevel_delta_g = 75.6588 deg, bevel_delta_p = 18.8412 deg, step_bevel = 3
+  claim abs(bevel_delta_p + bevel_delta_g - bevel_angle) < 0.000001deg — theorem: bevel_angle = 94.5 deg, bevel_delta_g = 75.6588 deg, bevel_delta_p = 18.8412 deg
+  0 params, 0 equations, structural rank 0; DOF 0

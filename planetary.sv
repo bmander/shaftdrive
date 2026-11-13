@@ -1,7 +1,7 @@
 // The bottom bracket's step-up: a helical planetary, carrier in, sun out, ring held.
 //
-// The crank spindle drives the carrier; the ring is pressed into the shell and held; the sun
-// turns `1 + Zr / Zs` = 3 times as fast as the cranks, the same way, and carries the hypoid gear
+// The crank spindle drives the carrier; the ring is keyed to a dogged adapter and held; the sun
+// turns `1 + Zr / Zs` = 3 times as fast as the cranks, the same way, and carries the spiral bevel gear
 // on its sleeve.  Three planets share the load, a third of a turn apart, which they can be because
 // `(Zs + Zr) / 3` is whole: at that spacing every planet meets the sun and the ring in the same
 // phase, so each is the first one moved, not turned (a third of a turn is 10 of the sun's pitches
@@ -21,18 +21,31 @@ use std.sets
 use std.solids (cut, union)
 use std.place (seats)
 use gears
+use interfaces
 use dims (Zs, Zp, Zr, planets, mn, alpha, beta, pw, ha, hf, backlash, edge, a, ring_od,
           sun_bore, planet_bore, sleeve_r, sleeve_to, spindle_d, pin_d, plate_t, plate_r, gap,
-          bridge_w, bridge_r, sleeve_groove_z, r471_25)
+          bridge_w, bridge_r, sleeve_groove_z, r471_35, sun_spline_from, sun_spline_to)
 
 component Planetary() {
-  // the sun, its sleeve running on toward the drive side to carry the hypoid gear
+  // the sun, its sleeve running on toward the drive side to carry the spiral bevel gear
   sun := gears.Helical(N: Zs, mn: mn, alpha: alpha, beta: beta, hand: 1, width: pw, ha: ha,
     hf: hf, backlash: backlash, bore: sun_bore, edge: edge, hub_r: sleeve_r, hub_from: 0mm,
     hub_to: sleeve_to)
   // the ring, shaped by a left-handed shaper of its own count
   ring := gears.Ring(N: Zr, mn: mn, alpha: alpha, beta: beta, hand: -1, width: pw, od: ring_od,
     ha: ha, hf: hf, backlash: backlash, edge: edge)
+
+  ring_dog_station := point
+  fix((0mm, 0mm, -pw / 2)) ring_dog_station
+  construction ring_dogs := interfaces.StraightSpline(root: 94mm, major: 97mm, tooth: 6mm, n: 6, length: pw)
+  ring_dogs seats(turn: 0deg, up: std.z, east: std.x) ring_dog_station
+  in std.top {
+    dog_core_circle := circle(center: std.top.origin)
+    radius(46.8mm) dog_core_circle
+  }
+  construction dog_core := solid(std.solids.Prism(face(dog_core_circle), from: -pw / 2, to: pw / 2))
+  dog_core cut ring_dogs.body
+  ring_dogs.body union ring.body
 
   // where the planets' pins stand, a third of a turn apart, the first on `std.x`; and between
   // each and the next, the carrier's bridge, a bar `bridge_w` wide on the bisector from just
@@ -76,7 +89,7 @@ component Planetary() {
     sleeve_bore := circle(center: std.top.origin)
     radius(sleeve_r + 1mm) sleeve_bore
     spindle_bore := circle(center: std.top.origin)
-    radius(spindle_d / 2) spindle_bore
+    radius(11.04mm) spindle_bore
     repeat planets as k {
       pin_c := circle(center: pc[k])
       radius(pin_d / 2) pin_c
@@ -89,6 +102,12 @@ component Planetary() {
       hf: hf, backlash: backlash, bore: planet_bore, edge: edge, hub_r: 0mm, hub_from: 0mm,
       hub_to: 0mm)
     planet seats(turn: 0deg, up: std.z, east: std.x) pc[k]
+    bush_seat := point
+    pc[k] distance(0mm, along: std.x) bush_seat
+    pc[k] distance(0mm, along: std.y) bush_seat
+    pc[k] distance(-pw / 2, along: std.z) bush_seat
+    planet_bush := interfaces.Annulus(d: pin_d + 0.02mm, D: planet_bore, length: pw)
+    planet_bush seats(turn: 0deg, up: std.z, east: std.x) bush_seat
     pin := solid(std.solids.Prism(face(pin_c[k]), from: -pw / 2 - gap - plate_t,
       to: pw / 2 + gap + plate_t))
   }
@@ -99,11 +118,42 @@ component Planetary() {
     from: pw / 2 + gap, to: pw / 2 + gap + plate_t))
   plate_free := solid(std.solids.Prism(face(rim, holes: spindle_bore, pin_c[0], pin_c[1], pin_c[2]),
     from: -pw / 2 - gap - plate_t, to: -pw / 2 - gap))
-  carrier := solid(plate_drive)
-  plate_free union carrier
+  carrier_base := solid(plate_free)
   repeat planets as k {
-    bridge[k] union carrier
+    bridge[k] union carrier_base
   }
+  carrier_spline_pos := point
+  fix((0mm, 0mm, -pw / 2 - gap - plate_t)) carrier_spline_pos
+  construction carrier_hub := interfaces.Annulus(d: 22.08mm, D: 30mm, length: pw + gap + plate_t)
+  carrier_hub seats(turn: 0deg, up: std.z, east: std.x) carrier_spline_pos
+  carrier_hub.body union carrier_base
+  construction carrier_spline := interfaces.StraightSpline(root: 22.08mm, major: 25.08mm, tooth: 2.26mm, n: 16, length: pw + gap + plate_t)
+  carrier_spline seats(turn: 0deg, up: std.z, east: std.x) carrier_spline_pos
+  carrier_spline.body cut carrier_base
+  // Three M5 screws through the removable cover into steel bridge threads.
+  repeat planets as k {
+    in std.top {
+      cover_hole := circle(center: m[k])
+      radius(2.75mm) cover_hole
+    }
+    construction cover_drill := solid(std.solids.Prism(face(cover_hole), from: pw / 2 - 8mm, to: pw / 2 + gap + plate_t + 1mm))
+    cover_drill cut plate_drive
+    cover_drill cut carrier_base
+  }
+  carrier := solid(carrier_base)
+  plate_drive union carrier
+  sun_spline_pos := point
+  fix((0mm, 0mm, sun_spline_from)) sun_spline_pos
+  construction sun_spline := interfaces.StraightSpline(root: 33mm, major: 35mm, tooth: 4mm, n: 12, length: sun_spline_to - sun_spline_from)
+  sun_spline seats(turn: 0deg, up: std.z, east: std.x) sun_spline_pos
+  construction sun_spline_mask := interfaces.Annulus(d: 32.9mm, D: 35.2mm, length: sun_spline_to - sun_spline_from)
+  sun_spline_mask seats(turn: 0deg, up: std.z, east: std.x) sun_spline_pos
+  sun_spline.body cut sun_spline_mask.body
+  sun_spline_mask.body cut sun.body
+  bush_pos := point
+  fix((0mm, 0mm, -pw / 2)) bush_pos
+  sun_bush := interfaces.Annulus(d: 30.04mm, D: 31mm, length: pw)
+  sun_bush seats(turn: 0deg, up: std.z, east: std.x) bush_pos
   // the groove in the sun's sleeve for the ring that holds its bearing
   in std.front {
     up := point
@@ -112,8 +162,8 @@ component Planetary() {
     std.origin distance(10mm, along: v) up
   }
   construction sleeve_groove := solid({ q | q in std.sets.Cylinder(axis_line, r: sleeve_r + 1mm)
-      q not in std.sets.Cylinder(axis_line, r: r471_25.groove / 2)
-      std.origin distance(in: (sleeve_groove_z - r471_25.t / 2, sleeve_groove_z + r471_25.t / 2), along: axis_line) q })
+      q not in std.sets.Cylinder(axis_line, r: r471_35.groove / 2)
+      std.origin distance(in: (sleeve_groove_z - r471_35.t / 2, sleeve_groove_z + r471_35.t / 2), along: axis_line) q })
   sleeve_groove cut sun.body
 
   // what turns, for an assembly to read

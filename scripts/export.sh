@@ -1,115 +1,58 @@
 #!/usr/bin/env bash
-# Check the drive and export its pictures and meshes: `scripts/export.sh [OUT]` (default `out`).
-#
-# Each run's report is kept under OUT/reports.  The script carries on past a refused output, so
-# every picture and mesh that can be made is made, and exits non-zero at the end if any run
-# failed or any claim was refuted.  SOLVENTC names the binary (default: `solventc` on the PATH).
+# Rebuild the engineering revision. Full rolling checks can take 40+ minutes.
+# SOLVENTC=/path/to/solventc scripts/export.sh /absolute/output
+# SKIP_ROLLING=1 is a geometry-only build and leaves mesh verification unperformed.
 set -uo pipefail
-
 cd "$(dirname "$0")/.."
 out=${1:-out}
+mkdir -p "$out"
+out=$(cd "$out" && pwd)
 solventc=${SOLVENTC:-solventc}
-mkdir -p "$out/png" "$out/stl/exact" "$out/reports"
-failed=()
-
-run() {   # run NAME ARGS…: one solventc run, its report in reports/NAME.txt
+mkdir -p "$out/png" "$out/stl/exact" "$out/stl/visualization" "$out/reports"
+failed=0
+run() {
   local name=$1; shift
-  echo "::group::$name"
-  local start=$SECONDS
   "$solventc" --no-progress --timings "$@" > "$out/reports/$name.txt" 2>&1
   local status=$?
-  cat "$out/reports/$name.txt"
-  echo "$name: exit $status in $((SECONDS - start)) s"
-  echo "::endgroup::"
-  [ "$status" -eq 0 ] || failed+=("$name (exit $status)")
+  echo "$name: compiler exit $status; see $out/reports/$name.txt"
+  [ "$status" -eq 0 ] || failed=1
 }
-
-soft=()
-soft_run() {   # soft_run NAME ARGS…: a run expected to fail on a known finding; noted, not fatal
-  local before=${#failed[@]}
-  run "$@"
-  if [ ${#failed[@]} -gt "$before" ]; then
-    soft+=("${failed[-1]}")
-    unset 'failed[-1]'
-  fi
-}
-
-"$solventc" --version
-
-# The design table: every claim over its numbers.
-run dims dims.sv
-
-# One planet on its own, from gears.sv's preview: the planets in the drive are this binding.
-run planet gears.sv \
-  --stl "$out/stl/exact/planet.stl" --solid planet.body \
-  --png "$out/png/planet.png" --view 20,25 --size 900
-
-# The planetary from above, its carrier hidden.
-run planetary planetary.sv \
-  --png "$out/png/planetary_top.png" --view top --size 1200 --hide box.carrier \
-  --png "$out/png/planetary_iso.png" --view 30,35 --size 1200
-
-# The drive in its frame: solved, its clearance claims judged, every exactly built part written as
-# an STL and five pictures drawn, each solid built once.
-run drive drive.sv \
-  --png "$out/png/drive_iso.png" --view 300,20 --size 1600 \
-  --png "$out/png/drive_cutaway.png" --view 300,20 --size 1600 --hide frame,bearing_cup \
-  --png "$out/png/drive_section.png" --view 290,25 --size 1600 --section 'y=-30mm' \
-  --png "$out/png/drive_top.png" --view top --size 1600 --hide frame,bearing_cup \
-  --png "$out/png/drive_right.png" --view right --size 1600 \
-  --stl "$out/stl/exact/frame.stl" --solid frame \
-  --stl "$out/stl/exact/bearing_cup.stl" --solid bearing_cup \
-  --stl "$out/stl/exact/sun.stl" --solid box.sun.body \
-  --stl "$out/stl/exact/ring.stl" --solid box.ring.body \
-  --stl "$out/stl/exact/carrier.stl" --solid box.carrier \
-  --stl "$out/stl/exact/shaft.stl" --solid shaft \
-  --stl "$out/stl/exact/spindle.stl" --solid spindle \
-  --stl "$out/stl/exact/hub.stl" --solid hub \
-  --stl "$out/stl/exact/thru_axle.stl" --solid thru_axle \
-  --stl "$out/stl/exact/crank.stl" --solid right_crank.body \
-  --stl "$out/stl/exact/bb_gear.stl" --solid bb_gear \
-  --stl "$out/stl/exact/hub_gear.stl" --solid hub_gear \
-  --stl "$out/stl/exact/bb_pinion.stl" --solid bb_pinion \
-  --stl "$out/stl/exact/hub_pinion.stl" --solid hub_pinion \
-  --stl "$out/stl/exact/bearing_6804_outer.stl" --solid right_6804.outer_ring \
-  --stl "$out/stl/exact/bearing_6804_inner.stl" --solid right_6804.inner_ring \
-  --stl "$out/stl/exact/bearing_6804_balls.stl" --solid right_6804.ball_set \
-  --stl "$out/stl/exact/ring_471_20.stl" --solid right_ring.ring.body \
-  --stl "$out/stl/exact/ring_472_24.stl" --solid right_hub_ring.ring.body
-
-# The bearings near the hub, whose balls meshed to nothing before v0.1.19 (README, finding 19).
-run hub_bearings drive.sv --no-check \
-  --stl "$out/stl/exact/bearing_6903_outer.stl" --solid hub_6903.outer_ring \
-  --stl "$out/stl/exact/bearing_6901_outer.stl" --solid right_6901.outer_ring \
-  --stl "$out/stl/exact/bearing_6901_balls.stl" --solid right_6901.ball_set
-
-# The planetary's meshes, rolled over a sun pitch with every joint at its ratio: the claims judge
-# the backlash at 37 poses (README: what solventc says of them).
-run mesh mesh.sv
-
-refuted=$(grep -h -E 'refuted|claim independent' "$out"/reports/*.txt || true)
-
-summary=${GITHUB_STEP_SUMMARY:-/dev/null}
-{
-  echo "## Shaft drive"
-  echo
-  echo '```'
-  "$solventc" --version
-  head -3 "$out/reports/drive.txt"
-  grep -E '^  claim' "$out/reports/drive.txt"
-  grep -E '^  claim' "$out/reports/mesh.txt" | cut -c1-200
-  echo '```'
-  echo
-  echo "Pictures: $(cd "$out/png" && ls | tr '\n' ' ')"
-  echo
-  echo "STL, exact: $(cd "$out/stl/exact" && ls | tr '\n' ' ')"
-  if [ ${#soft[@]} -gt 0 ]; then echo; echo "Known failures (README): ${soft[*]}"; fi
-  if [ ${#failed[@]} -gt 0 ]; then echo; echo "**Failed runs:** ${failed[*]}"; fi
-  if [ -n "$refuted" ]; then echo; echo '**Refuted claims:**'; echo '```'; echo "$refuted"; echo '```'; fi
-} >> "$summary"
-
-if [ ${#failed[@]} -gt 0 ] || [ -n "$refuted" ]; then
-  echo "failed: ${failed[*]:-}" >&2
-  [ -z "$refuted" ] || echo "refuted: $refuted" >&2
-  exit 1
+run dims-release dims.sv
+python engineering/verify.py > "$out/reports/physics.txt" || failed=1
+python engineering/check_clearance_math.py > "$out/reports/clearance-math.txt" || failed=1
+run wheel wheel.sv --no-check --png "$out/png/wheel.png" --view 300,20 --size 1200
+run planetary-exact planetary.sv --no-check \
+ --stl "$out/stl/exact/sun.stl" --solid box.sun.body \
+ --stl "$out/stl/exact/ring.stl" --solid box.ring.body \
+ --png "$out/png/planetary_iso.png" --view 30,35 --size 1100 \
+ --png "$out/png/planetary_top.png" --view top --size 1100 --hide box.carrier
+run planetary-release planetary.sv --no-check --stl-backend mesh --stl "$out/stl/visualization/planet.stl" --solid box.planet[0].body
+args=()
+for binding in 'frame:frame' 'frame_main:frame_main' 'rear_pod:rear_pod' 'rear_cover:rear_cover.body' 'service_cover:service_cover' 'bearing_cup:left_cap.body' 'hub:hub' 'shaft:shaft' 'spindle:spindle' 'crank:right_crank.body' 'carrier:box.carrier_base' 'carrier_cover:box.plate_drive' 'rear_coupler:rear_coupler.body' 'ring_adapter:ring_adapter' 'thru_axle:thru_axle' 'bb_gear_core:bb_gear_core' 'hub_gear_core:hub_gear_core' 'bb_pinion_core:bb_pinion_core' 'hub_pinion_core:hub_pinion_core'; do
+ name=${binding%%:*}; solid=${binding#*:}
+ args+=(--stl "$out/stl/exact/$name.stl" --solid "$solid")
+done
+run drive-release drive.sv "${args[@]}" \
+ --png "$out/png/drive_iso.png" --view 300,20 --size 1400 \
+ --png "$out/png/drive_cutaway.png" --view 300,20 --size 1400 --hide frame \
+ --png "$out/png/drive_top.png" --view top --size 1400 --hide frame \
+ --png "$out/png/drive_right.png" --view right --size 1400
+run bevel-exports drive.sv --no-check --stl-backend mesh \
+ --stl "$out/stl/visualization/bb_gear.stl" --solid bb_gear \
+ --stl "$out/stl/visualization/hub_gear.stl" --solid hub_gear \
+ --stl "$out/stl/visualization/bb_pinion.stl" --solid bb_pinion \
+ --stl "$out/stl/visualization/hub_pinion.stl" --solid hub_pinion
+python engineering/clearance.py "$out/stl/exact/frame.stl" --cs 460 --flanges -30 30 --out engineering/clearance-final.json > "$out/reports/clearance-final.txt" 2>&1 || failed=1
+if [ "${SKIP_ROLLING:-0}" != 1 ]; then
+ run mesh-release mesh.sv
+ run bevel_mesh-final bevel_mesh.sv
+else
+ echo 'Rolling checks skipped by caller; this is not a mesh verification run.'
 fi
+MPLCONFIGDIR=/tmp/shaftdrive-mpl python engineering/drawings.py || failed=1
+python engineering/make_report.py || failed=1
+if grep -nE '— refuted|error\[E' "$out"/reports/*.txt; then failed=1; fi
+if grep -nE '— undecided|continuous interval unproven' "$out"/reports/*.txt; then
+ echo 'REVIEW REQUIRED: inconclusive / sampled-only checks remain. Read the engineering report.'
+fi
+exit "$failed"

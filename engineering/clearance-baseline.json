@@ -1,0 +1,65 @@
+{
+  "frame": "/workspace/work/build/stl/exact/frame.stl",
+  "axle_center_mm": [
+    -424.26406871192853,
+    0.0,
+    70.0
+  ],
+  "flange_centers_mm": [
+    -12.5,
+    34.5
+  ],
+  "tire_37": {
+    "measured_mm": 0.054757886752167195,
+    "conservative_lower_mm": -0.055242113247832805,
+    "upper_mm": 0.0847578867521672,
+    "closest_frame_point_mm": [
+      -228.25605768213669,
+      -18.434512771782465,
+      337.47966739783686
+    ],
+    "refined_triangles": 200505,
+    "tolerance_mm": 0.08,
+    "mesh_error_mm": 0.03
+  },
+  "tire_40": {
+    "measured_mm": -1.6138892306532213,
+    "conservative_lower_mm": -1.7238892306532214,
+    "upper_mm": -1.5838892306532213,
+    "closest_frame_point_mm": [
+      -227.39700575669607,
+      -18.270347534368437,
+      338.64903151988983
+    ],
+    "refined_triangles": 201623,
+    "tolerance_mm": 0.08,
+    "mesh_error_mm": 0.03
+  },
+  "tire_40_movement": {
+    "measured_mm": -3.6138892306532213,
+    "conservative_lower_mm": -3.723889230653221,
+    "upper_mm": -3.5838892306532215,
+    "closest_frame_point_mm": [
+      -227.39700575669607,
+      -18.270347534368437,
+      338.64903151988983
+    ],
+    "refined_triangles": 201623,
+    "tolerance_mm": 0.08,
+    "mesh_error_mm": 0.03
+  },
+  "spokes_full_rotation": {
+    "measured_mm": 1.0302017382105768,
+    "conservative_lower_mm": 0.9141777784707134,
+    "upper_mm": 1.0662256979504403,
+    "closest_frame_point_mm": [
+      -400.51341593265533,
+      -17.12894395242135,
+      66.07782464722793
+    ],
+    "refined_triangles": 87576,
+    "tolerance_mm": 0.08,
+    "mesh_error_mm": 0.036023959739863484
+  },
+  "spoke_chord_error_mm": 0.006023959739863482
+}

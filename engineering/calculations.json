@@ -1,0 +1,125 @@
+{
+  "status": "Engineering proposal; geometric checks plus preliminary strength screens, not fabrication release",
+  "inputs": {
+    "crank_peak_Nm": 180,
+    "proof_crank_Nm": 360,
+    "cruise_W": 250,
+    "cadence_rpm": 90,
+    "system_mass_kg": 110,
+    "static_rear_share": 0.65,
+    "vertical_load_factor": 3,
+    "steel_G_MPa": 80000,
+    "steel_E_MPa": 210000,
+    "assumed_core_yield_MPa": 900,
+    "assumed_reversed_gear_bending_allowable_MPa": 450,
+    "assumed_contact_allowable_MPa": 1500
+  },
+  "kinematics": {
+    "planetary_ratio": 3,
+    "front_bevel_ratio": 3,
+    "rear_bevel_ratio": 0.3333333333333333,
+    "overall_ratio": 3,
+    "shaft_rpm": 810,
+    "wheel_rpm": 270,
+    "cruise_crank_Nm": 26.525823848649225,
+    "unloaded_rollout_m": 2.186548486898496,
+    "geometric_kph_at_90rpm": 35.42208548775562,
+    "shaft_peak_Nm": 20,
+    "sun_and_wheel_peak_Nm": 60,
+    "fixed_ring_peak_Nm": 120
+  },
+  "bevel_geometry": {
+    "shaft_angle_deg": 94.5,
+    "pinion_cone_deg": 18.841179528627087,
+    "gear_cone_deg": 75.65882047137292,
+    "pinion_mean_pitch_radius_mm": 13.5,
+    "gear_mean_pitch_radius_mm": 40.5,
+    "mean_cone_mm": 41.80265610771661,
+    "face_width_mm": 12.540796832314982,
+    "normal_module_mm": 1.3594616805549748,
+    "normal_backlash_allowance_mm": 0.14
+  },
+  "screens": {
+    "planet_bending_MPa_at_2x_peak_1p3_sharing": 292.40739055404424,
+    "bevel_bending_MPa_peak_K1p25": 417.51358090643805,
+    "bevel_bending_margin_assumed_allowable": 1.077809251193776,
+    "pitch_point_Hertz_MPa_peak_K1p25": 1356.0804307999765,
+    "bevel_tangential_N": 1481.4814814814815,
+    "pinion_axial_N_worst_hand": 845.9492279413208,
+    "pinion_transverse_N": 1677.1593834082682,
+    "proximal_bearing_radial_N_peak": 2515.7390751124026,
+    "bearing_C0_over_2x_radial": 1.5899900111148375,
+    "shaft_J_mm4": 8270.24266057513,
+    "shaft_tau_MPa_peak": 21.764778542481416,
+    "crank_referred_tube_windup_deg_conservative_460mm": 0.0885237311974841,
+    "crank_referred_bevel_lash_deg_upper_estimate": 0.14568964139962134,
+    "spindle_root_torsion_VM_MPa_at_proof_Kt1p8": 549.0663041913633
+  },
+  "wheel": {
+    "tire_ETRTO": "37-622; check 40-622 plus 2mm movement envelope",
+    "flange_centers_mm": [
+      -30,
+      30
+    ],
+    "flange_span_mm": 60,
+    "rim_ERD_mm": 596,
+    "spokes": 32,
+    "cross": 3,
+    "nominal_centerline_spoke_length_mm": 291.06416162669314,
+    "alternating_endpoint_lengths_mm": [
+      290.8255468205119,
+      291.32490227141545
+    ],
+    "nominal_bracing_deg": 5.619209030589809,
+    "left_right_tension_ratio": 1.0,
+    "original_tension_ratio_approx": 2.76,
+    "target_tension_N": 1000,
+    "torque_increment_N_per_spoke_peak": 82.59374431873357,
+    "torque_increment_N_per_spoke_proof": 165.18748863746714,
+    "rear_vertical_load_N_3g": 2104.2450000000003
+  },
+  "joints": {
+    "shaft": {
+      "proof_torque_Nm": 40.0,
+      "effective_flanks": 3,
+      "mean_flank_pressure_MPa": 54.6168288103772
+    },
+    "sun_bevel": {
+      "proof_torque_Nm": 120.0,
+      "effective_flanks": 6,
+      "mean_flank_pressure_MPa": 117.6470588235294
+    },
+    "hub_bevel": {
+      "proof_torque_Nm": 120.0,
+      "effective_flanks": 6,
+      "mean_flank_pressure_MPa": 114.94252873563218
+    },
+    "carrier": {
+      "proof_torque_Nm": 360.0,
+      "effective_flanks": 8,
+      "mean_flank_pressure_MPa": 98.96091044037604
+    },
+    "crank": {
+      "proof_torque_Nm": 360.0,
+      "effective_flanks": 8,
+      "mean_flank_pressure_MPa": 170.2127659574468
+    },
+    "ring_dogs": {
+      "proof_torque_Nm": 240.0,
+      "effective_flanks": 3,
+      "mean_flank_pressure_MPa": 48.562106381364295
+    },
+    "ring_pins": {
+      "proof_torque_Nm": 240,
+      "effective_pins": 3,
+      "single_shear_MPa": 51.44402200950153
+    }
+  },
+  "planet_pin": {
+    "diameter_mm": 8,
+    "bush_OD_mm": 10,
+    "proof_force_N": 5212.161736625839,
+    "proof_uniform_load_bending_MPa": 338.297313273395,
+    "proof_bush_pressure_MPa": 28.326965959923037
+  }
+}
