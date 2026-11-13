@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Rebuild the engineering revision. The rolling checks took 40+ minutes on v0.1.20, rebuilding each
-# gear at every sample; with geomsolver#924 each gear is built once and moved, about a minute each.
+# Rebuild the engineering revision. The rolling checks took 40+ minutes before solventc v0.1.21,
+# which builds each gear once and moves it to every sample; on v0.1.21 they take about a minute each.
 # SOLVENTC=/path/to/solventc scripts/export.sh /absolute/output
 # SKIP_ROLLING=1 is a geometry-only build and leaves mesh verification unperformed.
 set -uo pipefail
